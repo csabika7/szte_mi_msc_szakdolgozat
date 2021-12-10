@@ -29,7 +29,7 @@ model = define_model()
 # print("CNN Error: %.2f%%" % (100-scores[1]*100))
 
 # Save model
-model.save('./model.hdf5')
+model.save('./weed_model.hdf5')
 
 
 
