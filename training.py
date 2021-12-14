@@ -32,9 +32,6 @@ model = define_model()
 model.save('./weed_model.hdf5')
 
 
-
-
-
 def define_model():
     # dummy model for image testing
     m = Sequential()
