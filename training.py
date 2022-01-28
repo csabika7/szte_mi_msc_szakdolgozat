@@ -1,45 +1,62 @@
-import keras
 from keras.models import Sequential
 from keras.layers import Dense
-# from keras.datasets import mnist
-from keras.layers import Flatten
-from keras.layers.convolutional import Conv2D
-from keras.layers.convolutional import MaxPooling2D
-# from keras.utils import np_utils
-import os
+from keras.layers import Flatten, BatchNormalization, Dropout
+from keras.layers.convolutional import Conv2D, MaxPooling2D
+from keras.preprocessing.image import ImageDataGenerator
 
-os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
-
-
-# TODO Load data
-# (X_train, y_train), (X_test, y_test) = mnist.load_data()
-# X_train = X_train.reshape((X_train.shape[0], 28, 28, 1)).astype('float32')
-# X_test = X_test.reshape((X_test.shape[0], 28, 28, 1)).astype('float32')
-# X_train = X_train / 255
-# X_test = X_test / 255
-# y_train = np_utils.to_categorical(y_train)
-# y_test = np_utils.to_categorical(y_test)
 
 # Define model
+def define_model():
+    # AlexNet
+    m = Sequential()
+    m.add(Conv2D(filters=96, kernel_size=(11, 11), strides=(4, 4), activation='relu', input_shape=(227, 227, 3)))
+    m.add(BatchNormalization())
+    m.add(MaxPooling2D(pool_size=(3, 3), strides=(2, 2)))
+    m.add(Conv2D(filters=256, kernel_size=(5, 5), strides=(1, 1), activation='relu'))
+    m.add(BatchNormalization())
+    m.add(MaxPooling2D(pool_size=(3, 3), strides=(2, 2)))
+    m.add(Conv2D(filters=384, kernel_size=(3, 3), strides=(1, 1), activation='relu'))
+    m.add(Conv2D(filters=384, kernel_size=(3, 3), strides=(1, 1), activation='relu'))
+    m.add(Conv2D(filters=256, kernel_size=(3, 3), strides=(1, 1), activation='relu'))
+    m.add(Flatten())
+    m.add(Dense(4096, activation='relu'))
+    m.add(Dropout(0.5))
+    m.add(Dense(4096, activation='relu'))
+    m.add(Dense(1, activation='sigmoid'))
+
+    m.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
+
+    return m
+
+
+# Load data
+TRAINING_DIR = ".\\training_db\\preprocessed\\train"
+VALIDATION_DIR = ".\\training_db\\preprocessed\\validation"
+BATCH_SIZE = 8
+generator = ImageDataGenerator()
+
+train = generator.flow_from_directory(
+    directory=TRAINING_DIR,
+    target_size=(227, 227),
+    class_mode="binary",
+    batch_size=BATCH_SIZE
+)
+
+validation = generator.flow_from_directory(
+    directory=VALIDATION_DIR,
+    target_size=(227, 227),
+    class_mode="binary",
+    batch_size=BATCH_SIZE
+)
+
 model = define_model()
 
-# TODO Train model
-# model.fit(X_train, y_train, validation_data=(X_test, y_test), epochs=5, batch_size=150)
-# scores = model.evaluate(X_test, y_test, verbose=0)
-# print("CNN Error: %.2f%%" % (100-scores[1]*100))
+# training
+model.fit(train, steps_per_epoch=296/BATCH_SIZE, epochs=10, validation_data=validation, validation_steps=72/BATCH_SIZE)
+scores = model.evaluate(validation, verbose=0)
+
+# evaluation
+print("CNN Error: %.2f%%" % (100-scores[1]*100))
 
 # Save model
 model.save('./weed_model.hdf5')
-
-
-def define_model():
-    # dummy model for image testing
-    m = Sequential()
-    m.add(Conv2D(32, (5, 5), input_shape=(28, 28, 1), activation='relu'))
-    m.add(MaxPooling2D())
-    m.add(Flatten())
-    m.add(Dense(128, activation='relu'))
-    m.add(Dense(num_of_classes, activation='softmax'))
-    # Compile model
-    m.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
-    return m
