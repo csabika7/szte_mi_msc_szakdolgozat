@@ -1,0 +1,10 @@
+sso:
+  hostname: "0.0.0.0:8443"
+  username: admin
+  password: admin
+
+db:
+  port: 5432
+  name: keycloak
+  username: admin
+  password: admin

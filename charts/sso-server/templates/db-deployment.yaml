@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sso-db-deployment
+  labels:
+    app: sso-db-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sso-db-server
+  template:
+    metadata:
+      labels:
+        app: sso-db-server
+    spec:
+      containers:
+      - name: sso-db-server
+        image: postgres:14
+        ports:
+        - containerPort: 8443
+        env:
+          - name: POSTGRES_DB
+            value: {{ .Values.db.name }}
+          - name: POSTGRES_USER
+            valueFrom:
+              secretKeyRef:
+                name: sso-db-credentials
+                key: username
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: sso-db-credentials
+                key: password
