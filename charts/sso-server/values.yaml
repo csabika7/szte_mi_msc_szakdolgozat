@@ -1,5 +1,5 @@
 sso:
-  hostname: "0.0.0.0:8443"
+  hostname: "localhost"
   username: admin
   password: admin
 

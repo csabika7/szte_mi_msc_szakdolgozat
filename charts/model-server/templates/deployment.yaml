@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
       - name: model-server
-        image: szakdoga:0.6
+        image: model-server:0.1
         ports:
-        - containerPort: 80
+        - containerPort: 5000

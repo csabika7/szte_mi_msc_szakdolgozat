@@ -1,0 +1,27 @@
+##################
+#  model server  #
+##################
+
+# Build docker and helm package
+docker build .\model-server -t model-server:0.1
+helm package .\charts\model-server\ -d .\charts\model-server\
+
+# Helm install
+helm install .\charts\model-server\model-server-1.0.0.tgz --generate-name
+
+# Port forward access
+kubectl port-forward svc/model-server-service 5000:80
+
+################
+#  sso server  #
+################
+
+# Build docker and helm package
+docker build .\sso-server -t sso-server:0.1
+helm package .\charts\sso-server\ -d .\charts\sso-server\
+
+# Helm install
+helm install .\charts\sso-server\sso-server-1.0.0.tgz --generate-name
+
+# Port forward access
+kubectl port-forward svc/sso-server-service 443:443

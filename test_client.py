@@ -13,5 +13,5 @@ http = urllib3.PoolManager()
 resp = http.request("POST", "http://localhost:5000/v1/model/predict",
                     headers={"Content-Type": "text/plain;base64"},
                     body=b64_encoded_img)
-
+print(resp.status)
 print(json.loads(resp.data.decode('utf-8')))
