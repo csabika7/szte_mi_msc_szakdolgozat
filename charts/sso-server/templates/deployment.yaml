@@ -20,27 +20,27 @@ spec:
         ports:
         - containerPort: 8443
         env:
-          - name: KC_HOSTNAME
-            value: {{ .Values.sso.hostname | quote }}
-          - name: KC_DB_URL
-            value: {{ include "sso-db-url" . | trim | quote }}
-          - name: KC_DB_USERNAME
-            valueFrom:
-              secretKeyRef:
-                name: sso-db-credentials
-                key: username
-          - name: KC_DB_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: sso-db-credentials
-                key: password
-          - name: KEYCLOAK_ADMIN
-            valueFrom:
-              secretKeyRef:
-                name: sso-server-credentials
-                key: username
-          - name: KEYCLOAK_ADMIN_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: sso-server-credentials
-                key: password
+        - name: KC_HOSTNAME
+          value: {{ .Values.sso.hostname | quote }}
+        - name: KC_DB_URL
+          value: {{ include "sso-db-url" . | trim | quote }}
+        - name: KC_DB_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: sso-db-credentials
+              key: username
+        - name: KC_DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: sso-db-credentials
+              key: password
+        - name: KEYCLOAK_ADMIN
+          valueFrom:
+            secretKeyRef:
+              name: sso-server-credentials
+              key: username
+        - name: KEYCLOAK_ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: sso-server-credentials
+              key: password

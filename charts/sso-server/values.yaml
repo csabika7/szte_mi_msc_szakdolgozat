@@ -6,5 +6,5 @@ sso:
 db:
   port: 5432
   name: keycloak
-  username: admin
-  password: admin
+  username: sa
+  password: keycloak
