@@ -32,3 +32,9 @@ spec:
               secretKeyRef:
                 name: sso-db-credentials
                 key: password
+        volumeMounts:
+        - mountPath: /var/lib/postgresql/data
+          name: cache-volume
+      volumes:
+      - name: cache-volume
+        emptyDir: {}

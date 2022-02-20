@@ -3,7 +3,7 @@
 ##################
 
 # Build docker and helm package
-docker build .\model-server -t model-server:0.1
+docker build .\model-server -t model-server:0.1 --no-cache
 helm package .\charts\model-server\ -d .\charts\model-server\
 
 # Helm install
@@ -16,12 +16,18 @@ kubectl port-forward svc/model-server-service 5000:80
 #  sso server  #
 ################
 
+# Build image for post install hook
+docker build .\sso-server\realm-setup -t sso-server-post-install:0.1 --no-cache
+
 # Build docker and helm package
-docker build .\sso-server -t sso-server:0.1
+docker build .\sso-server -t sso-server:0.1 --no-cache
 helm package .\charts\sso-server\ -d .\charts\sso-server\
 
 # Helm install
-helm install .\charts\sso-server\sso-server-1.0.0.tgz --generate-name
+helm install .\charts\sso-server\sso-server-1.0.0.tgz --generate-name --timeout 60s
 
 # Port forward access
 kubectl port-forward svc/sso-server-service 443:443
+
+# Install ingress controller
+helm upgrade --install ingress-nginx ingress-nginx --repo https://kubernetes.github.io/ingress-nginx

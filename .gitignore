@@ -3,3 +3,4 @@ training_db/
 dolgozat/
 weed_model.hdf5
 *.tgz
+client_secret.json

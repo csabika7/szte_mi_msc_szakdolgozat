@@ -1,7 +1,11 @@
 sso:
-  hostname: "localhost"
+  serviceName: "sso-server-service"
+  hostname: localhost
   username: admin
   password: admin
+  realm: weed_rec_admin_realm
+  client_id:
+  client_secret:
 
 db:
   port: 5432

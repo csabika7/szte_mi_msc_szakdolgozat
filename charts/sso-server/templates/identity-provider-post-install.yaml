@@ -1,0 +1,41 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: sso-server-identity-provider-post-install-hook
+  annotations:
+    "helm.sh/hook": post-install
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  template:
+    metadata:
+      name: sso-server-identity-provider-post-install-hook
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: sso-server-identity-provider-post-install-job
+        image: sso-server-post-install:0.1
+        volumeMounts:
+          - name: identity-provider-secret
+            mountPath: "/realm_data"
+            readOnly: true
+        env:
+        - name: KEYCLOAK_HOST
+          value: {{ .Values.sso.serviceName | quote }}
+        - name: KEYCLOAK_ADMIN
+          valueFrom:
+            secretKeyRef:
+              name: sso-server-credentials
+              key: username
+        - name: KEYCLOAK_ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: sso-server-credentials
+              key: password
+        - name: KEYCLOAK_REALM
+          value: {{ .Values.sso.realm }}
+        - name: KEYCLOAK_PROTO
+          value: https
+      volumes:
+        - name: identity-provider-secret
+          secret:
+            secretName: identity-provider-secret
