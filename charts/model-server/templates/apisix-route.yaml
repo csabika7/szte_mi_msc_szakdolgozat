@@ -1,0 +1,15 @@
+apiVersion: apisix.apache.org/v2beta1
+kind: ApisixRoute
+metadata:
+  name: model-server-route
+spec:
+  http:
+    - name: prediction
+      match:
+        hosts:
+        - localhost
+        paths:
+          - /v1/model/predict
+      backends:
+        - serviceName: model-server-service
+          servicePort: 5000

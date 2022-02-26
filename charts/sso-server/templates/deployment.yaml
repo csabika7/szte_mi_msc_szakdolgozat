@@ -18,7 +18,10 @@ spec:
       - name: sso-server
         image: sso-server:0.1
         ports:
-        - containerPort: 8443
+        - name: https
+          containerPort: 8443
+        - name: http
+          containerPort: 8080
         env:
         - name: KC_HOSTNAME
           value: {{ .Values.sso.hostname | quote }}

@@ -4,3 +4,5 @@ dolgozat/
 weed_model.hdf5
 *.tgz
 client_secret.json
+*.crt
+*.key

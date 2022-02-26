@@ -6,6 +6,11 @@ spec:
   selector:
     app: sso-server
   ports:
-    - protocol: TCP
-      port: 443
-      targetPort: 8443
+  - name: https
+    protocol: TCP
+    port: 443
+    targetPort: 8443
+  - name: http
+    protocol: TCP
+    port: 80
+    targetPort: 8080
