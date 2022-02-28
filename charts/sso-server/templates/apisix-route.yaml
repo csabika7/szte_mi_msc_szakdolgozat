@@ -15,23 +15,3 @@ spec:
       backends:
         - serviceName: sso-server-service
           servicePort: 80
-    - name: httpbin
-      match:
-        hosts:
-          - "localhost"
-        paths:
-          - "/get"
-          - "/redirect_uri"
-      backends:
-        - serviceName: httpbin
-          servicePort: 80
-      plugins:
-        - name: openid-connect
-          enable: true
-          config:
-            client_id: "model-administration"
-            client_secret: "wnaKjc2zmgEV9PvBTkbnsr1jsFrWw0Qf"
-            discovery: "http://sso-server-service/realms/weed_rec_admin_realm/.well-known/openid-configuration"
-            realm: "weed_rec_admin_realm"
-            bearer_only: false
-            redirect_uri: "/redirect_uri"

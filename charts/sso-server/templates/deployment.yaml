@@ -23,6 +23,10 @@ spec:
         - name: http
           containerPort: 8080
         env:
+        - name: KC_HTTP_ENABLED
+          value: "true"
+        - name: KC_HTTP_PORT
+          value: "8080"
         - name: KC_HOSTNAME
           value: {{ .Values.sso.hostname | quote }}
         - name: KC_DB_URL

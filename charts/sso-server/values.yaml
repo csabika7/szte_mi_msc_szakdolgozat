@@ -1,12 +1,15 @@
 sso:
   serviceName: "sso-server-service"
-  hostname: localhost
+  hostname: "localhost:31152"
   username: admin
   password: admin
   realm: weed_rec_admin_realm
   identity_provider:
     client_id:
     client_secret:
+  ingress_client:
+    client_id: model-administration
+    client_secret: wnaKjc2zmgEV9PvBTkbnsr1jsFrWg0Qf
 
 db:
   port: 5432

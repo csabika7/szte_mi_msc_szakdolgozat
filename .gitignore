@@ -6,3 +6,4 @@ weed_model.hdf5
 client_secret.json
 *.crt
 *.key
+**/requirements.lock

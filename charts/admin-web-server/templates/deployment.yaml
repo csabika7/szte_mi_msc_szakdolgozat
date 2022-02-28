@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: admin-web-server-deployment
+  labels:
+    app: admin-web-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: admin-web-server
+  template:
+    metadata:
+      labels:
+        app: admin-web-server
+    spec:
+      containers:
+      - name: admin-web-server
+        image: kennethreitz/httpbin
+        ports:
+        - name: https
+          containerPort: 80

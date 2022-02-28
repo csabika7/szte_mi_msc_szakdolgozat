@@ -1,0 +1,26 @@
+apiVersion: apisix.apache.org/v2beta3
+kind: ApisixRoute
+metadata:
+  name: admin-web-server-route
+spec:
+  http:
+    - name: admin-web-server-http
+      match:
+        hosts:
+          - "localhost"
+        paths:
+          - "/get"
+          - "/redirect_uri"
+      backends:
+        - serviceName: admin-web-server-service
+          servicePort: 80
+      plugins:
+        - name: openid-connect
+          enable: true
+          config:
+            client_id: {{ .Values.sso.client_id }}
+            client_secret: {{ .Values.sso.client_secret }}
+            discovery: {{ .Values.sso.discovery_url }}
+            realm: {{ .Values.sso.realm }}
+            bearer_only: false
+            redirect_uri: /redirect_uri
