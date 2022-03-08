@@ -9,8 +9,8 @@ app = Flask(__name__)
 @app.route("/v1/model/predict", methods=["POST"])
 def predict():
     b64_encoded_img = request.data
-    input = convert_img_to_model_input(b64_encoded_img)
-    prediction = weed_model.predict(input)
+    input_img = convert_img_to_model_input(b64_encoded_img)
+    prediction = weed_model.predict(input_img)
     return jsonify(prediction.tolist())
 
 
