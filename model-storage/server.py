@@ -61,6 +61,8 @@ def store():
 @app.route("/v1/model-store/model/<string:model_id>", methods=["GET"])
 def get_metadata(model_id):
     m = Model.query.get(model_id)
+    if not m:
+        return "", 404
     return {
         "id": m.id,
         "name": m.name
@@ -70,6 +72,8 @@ def get_metadata(model_id):
 @app.route("/v1/model-store/model/download/<string:model_id>", methods=["GET"])
 def download_model_file(model_id):
     m = Model.query.get(model_id)
+    if not m:
+        return "", 404
     return send_from_directory(MODEL_STORAGE_PATH, m.file_name)
 
 
