@@ -1,14 +1,15 @@
 from scipy.ndimage import interpolation
 import imageio as iio
 from pathlib import Path
+import os
 
 TARGET_HEIGHT = 227
 TARGET_WIDTH = 227
 
-positive_samples_src_path = ".\\training_db\\raw\\positive\\ratio_changed"
-positive_samples_target_path = ".\\training_db\\raw\\positive\\resized"
-negative_samples_src_path = ".\\training_db\\raw\\negative\\ratio_changed"
-negative_samples_target_path = ".\\training_db\\raw\\negative\\resized"
+positive_samples_src_path = os.path.join(os.getcwd(), "training_db", "raw", "positive", "ratio_changed")
+positive_samples_target_path = os.path.join(os.getcwd(), "training_db", "raw", "positive", "resized")
+negative_samples_src_path = os.path.join(os.getcwd(), "training_db", "raw", "negative", "ratio_changed")
+negative_samples_target_path = os.path.join(os.getcwd(), "training_db", "raw", "negative", "resized")
 
 
 def read_image(path):

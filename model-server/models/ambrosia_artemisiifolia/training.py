@@ -3,6 +3,7 @@ from keras.layers import Dense
 from keras.layers import Flatten, BatchNormalization, Dropout
 from keras.layers.convolutional import Conv2D, MaxPooling2D
 from keras.preprocessing.image import ImageDataGenerator
+import os
 
 
 # Define model
@@ -30,8 +31,9 @@ def define_model():
 
 
 # Load data
-TRAINING_DIR = ".\\training_db\\preprocessed\\train"
-VALIDATION_DIR = ".\\training_db\\preprocessed\\validation"
+
+TRAINING_DIR = os.path.join(os.getcwd(), "training_db", "preprocessed", "train")
+VALIDATION_DIR = os.path.join(os.getcwd(), "training_db", "preprocessed", "validation")
 BATCH_SIZE = 8
 generator = ImageDataGenerator()
 
@@ -59,4 +61,4 @@ scores = model.evaluate(validation, verbose=0)
 print("CNN Error: %.2f%%" % (100-scores[1]*100))
 
 # Save model
-model.save('./weed_model.hdf5')
+model.save(os.path.join(os.getcwd(), "weed_model.hdf5"))

@@ -1,7 +1,7 @@
 import os
 
-dir_pos = ".\\training_db\\raw\\positive\\resized\\"
-dir_neg = ".\\training_db\\raw\\negative\\resized\\"
+dir_pos = os.path.join(os.getcwd(), "training_db", "raw", "positive", "resized")
+dir_neg = os.path.join(os.getcwd(), "training_db", "raw", "negative", "resized")
 
 
 def rename_files(directory):

@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: model-storage-service
+spec:
+  selector:
+    app: model-storage
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 5000

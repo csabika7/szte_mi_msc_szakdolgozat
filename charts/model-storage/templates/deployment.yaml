@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: model-storage-deployment
+  labels:
+    app: model-storage
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: model-storage
+  template:
+    metadata:
+      labels:
+        app: model-storage
+    spec:
+      containers:
+      - name: model-storage
+        image: model-storage:0.1
+        ports:
+        - containerPort: 5000
+        env:
+        - name: MODEL_STORAGE_PATH
+          value: /data
+        volumeMounts:
+        - mountPath: /data
+          name: model-data-volume
+      volumes:
+      - name: model-data-volume
+        emptyDir: {}
