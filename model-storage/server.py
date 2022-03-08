@@ -5,7 +5,7 @@ import os
 import uuid
 
 # Constants
-MODEL_STORAGE_PATH = "E:\\temp\\"  # os.environ["MODEL_STORAGE_PATH"]
+MODEL_STORAGE_PATH = os.environ["MODEL_STORAGE_PATH"]
 META_DATA_DB_FILE = "metadata.db"
 META_DATA_DB_PATH = str(os.path.join(MODEL_STORAGE_PATH, META_DATA_DB_FILE))
 ALLOWED_EXTENSIONS = {"hdf5"}
