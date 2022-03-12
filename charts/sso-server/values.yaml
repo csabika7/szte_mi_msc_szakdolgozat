@@ -5,8 +5,8 @@ sso:
   password: admin
   realm: weed_rec_admin_realm
   identity_provider:
-    client_id: 416118485535-t8hvc35esu9l4853pdmieao35af3o536.apps.googleusercontent.com
-    client_secret: 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
+    client_id:
+    client_secret:
   ingress_client:
     client_id: model-administration
     client_secret: wnaKjc2zmgEV9PvBTkbnsr1jsFrWg0Qf

@@ -1,0 +1,15 @@
+apiVersion: apisix.apache.org/v2beta1
+kind: ApisixRoute
+metadata:
+  name: model-predicate-aggregator-route
+spec:
+  http:
+    - name: prediction
+      match:
+        hosts:
+        - localhost
+        paths:
+          - /v1/model/predicate
+      backends:
+        - serviceName: model-predicate-aggregator-service
+          servicePort: 80

@@ -1,7 +1,7 @@
 apiVersion: apisix.apache.org/v2beta1
 kind: ApisixRoute
 metadata:
-  name: model-server-route
+  name: model-orchestrator-route
 spec:
   http:
     - name: prediction
@@ -9,7 +9,7 @@ spec:
         hosts:
         - localhost
         paths:
-          - /v1/model/predict
+          - /v1/model-orchestrator/*
       backends:
-        - serviceName: model-server-service
+        - serviceName: model-orchestrator-service
           servicePort: 80

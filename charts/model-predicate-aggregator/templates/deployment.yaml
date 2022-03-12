@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: model-predicate-aggregator-deployment
+  labels:
+    app: model-predicate-aggregator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: model-predicate-aggregator
+  template:
+    metadata:
+      labels:
+        app: model-predicate-aggregator
+    spec:
+      containers:
+      - name: model-predicate-aggregator
+        image: model-predicate-aggregator:0.1
+        ports:
+        - containerPort: 5000

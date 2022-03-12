@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{deployment_name}"
+  labels:
+    app: "{app_name}"
+    managed_by: model-orchestrator
+  annotations:
+    model_name: "{model_name}"
+    model_id: "{model_id}"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: "{app_name}"
+  template:
+    metadata:
+      labels:
+        app: "{app_name}"
+    spec:
+      containers:
+      - name: "{container_name}"
+        image: model-predicate-server:0.1
+        ports:
+          - containerPort: 5000
+        env:
+          - name: MODEL_FILE_URL
+            value: "{model_url}"
+          - name: MODEL_DATA_VOLUME
+            value: /data
+        volumeMounts:
+          - mountPath: /data
+            name: model-data-volume
+      volumes:
+        - name: model-data-volume
+          emptyDir:
+            medium: ""

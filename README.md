@@ -1,17 +1,24 @@
 # Overview
 Thesis work of Csaba Kocsis for University of Szeged TTIK Computer Engineering Msc.
-
 # Installation Guide
 Development is done on a Windows machine therefore all commands below follow Windows path syntax.
-## Model server
+
+NOTE: Machine learning model associated with this project is not available in this repository.
+If you wish to use it write me a message asking for it. However, you can also deploy your own model.
+Requirements for the model:
+- Keras can import the model by calling: ```tf.keras.models.load_model```
+- Model takes 227x227x3 matrix as an input.
+- Model does binary classification
+
+## Model Predicate Aggregator server
 ### Build docker and helm package
 ```pwsh
-docker build .\model-server -t model-server:0.1 --no-cache
-helm package .\charts\model-server
+docker build .\model-predicate-aggregator-server -t model-predicate-aggregator-server:0.1 --no-cache
+helm package .\charts\model-predicate-aggregator-server
 ```
 ### Helm install
 ```pwsh
-helm install model-server .\model-server-1.0.0.tgz
+helm install model-predicate-aggregator-server .\model-predicate-aggregator-server-1.0.0.tgz
 ```
 ## Model Storage server
 ### Build docker and helm package
@@ -22,6 +29,17 @@ helm package .\charts\model-storage\
 ### Helm istall
 ```pwsh
 helm install model-storage .\model-storage-1.0.0.tgz
+```
+## Model Orchestrator
+### Build docker and helm package
+```pwsh
+docker build .\model-predicate-server -t model-predicate-server:0.1 --no-cache
+docker build .\model-orchestrator -t model-orchestrator:0.1 --no-cache
+helm package .\charts\model-orchestrator
+```
+### Helm install
+```pwsh
+helm install model-orchestrator .\model-orchestrator-1.0.0.tgz
 ```
 ## SSO server
 ### Build docker and helm package

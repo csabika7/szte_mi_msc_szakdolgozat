@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: model-orchestrator-deployment
+  labels:
+    app: model-orchestrator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: model-orchestrator
+  template:
+    metadata:
+      labels:
+        app: model-orchestrator
+    spec:
+      serviceAccountName: model-orchestrator-service-account
+      containers:
+      - name: model-orchestrator
+        image: model-orchestrator:0.1
+        ports:
+        - containerPort: 5000
+        env:
+        - name: MODEL_STORAGE_PROTO
+          value: {{ .Values.model.storage.proto | quote }}
+        - name: MODEL_STORAGE_HOST
+          value: {{ .Values.model.storage.host | quote }}
+        - name: MODEL_STORAGE_PORT
+          value: {{ .Values.model.storage.port | quote }}

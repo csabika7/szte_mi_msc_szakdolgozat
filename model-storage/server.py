@@ -69,6 +69,12 @@ def get_metadata(model_id):
     }
 
 
+@app.route("/v1/model-store/model/list", methods=["GET"])
+def get_all_metadata():
+    model_list = Model.query.all()
+    return [{"id": m.id, "name": m.name} for m in model_list]
+
+
 @app.route("/v1/model-store/model/download/<string:model_id>", methods=["GET"])
 def download_model_file(model_id):
     m = Model.query.get(model_id)

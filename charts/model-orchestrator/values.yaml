@@ -1,0 +1,5 @@
+model:
+  storage:
+    proto: http
+    host: model-storage-service
+    port: 80
