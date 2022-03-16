@@ -9,7 +9,7 @@ spec:
         hosts:
         - localhost
         paths:
-          - /v1/model/predicate
+          - /v1/model/predicate/*
       backends:
         - serviceName: model-predicate-aggregator-service
           servicePort: 80

@@ -122,8 +122,9 @@ def deactivate(model_id):
 @app.route("/v1/model-orchestrator/model/active", methods=["GET"])
 def get_services():
     with kubernetes.client.ApiClient(configuration) as api_client:
-        v1 = kubernetes.client.CoreV1Api(api_client)
-        resp = v1.list_namespaced_service(namespace=NAMESPACE, label_selector="managed_by=model-orchestrator")
+        apps_v1_api = kubernetes.client.AppsV1Api(api_client)
+        resp = apps_v1_api.list_namespaced_deployment(namespace=NAMESPACE,
+                                                      label_selector="managed_by=model-orchestrator")
         active_models = [{
                 "model_id": item.metadata.annotations["model_id"],
                 "model_name": item.metadata.annotations["model_name"]

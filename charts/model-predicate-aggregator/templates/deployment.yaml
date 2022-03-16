@@ -14,8 +14,12 @@ spec:
       labels:
         app: model-predicate-aggregator
     spec:
+      serviceAccountName: model-predicate-aggregator-service-account
       containers:
       - name: model-predicate-aggregator
         image: model-predicate-aggregator:0.1
         ports:
         - containerPort: 5000
+        env:
+        - name: LABEL_SELECTOR_FOR_MODEL_PREDICATE_SERVICES
+          value: "managed_by=model-orchestrator"

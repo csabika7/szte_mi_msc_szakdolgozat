@@ -31,15 +31,19 @@ print("Model loaded.")
 
 @app.route("/v1/model/predict", methods=["POST"])
 def predict():
-    b64_encoded_img = request.data
-    input_img = convert_img_to_model_input(b64_encoded_img)
-    prediction = MODEL.predict(input_img)
-    return jsonify(prediction.tolist())
+    try:
+        app.logger.info("Received request to do prediction")
+        file = request.files["img"]
+        input_img = convert_img_to_model_input(file.read())
+        prediction = MODEL.predict(input_img)
+        return str(prediction.tolist()[0][0])
+    except Exception as e:
+        app.logger.error(e)
+        return "", 500
 
 
-def convert_img_to_model_input(b64_encoded_img):
-    b64_decoded_img = base64.b64decode(b64_encoded_img)
-    img_tensor = tf.io.decode_raw(b64_decoded_img, tf.uint8)
+def convert_img_to_model_input(raw_img):
+    img_tensor = tf.io.decode_image(raw_img, channels=3)
     img = tf.reshape(img_tensor, (1, 227, 227, 3))
     return img
 

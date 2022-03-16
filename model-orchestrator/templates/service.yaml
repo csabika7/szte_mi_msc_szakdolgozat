@@ -2,11 +2,11 @@ apiVersion: v1
 kind: Service
 metadata:
   name: "{service_name}"
-annotations:
-  model_name: "{model_name}"
-  model_id: "{model_id}"
-labels:
-  managed_by: model-orchestrator
+  annotations:
+    model_name: "{model_name}"
+    model_id: "{model_id}"
+  labels:
+    managed_by: model-orchestrator
 spec:
   selector:
     app: "{app_name}"

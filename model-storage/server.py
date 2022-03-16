@@ -54,7 +54,7 @@ def store():
         db.session.commit()
         return model_id, 200
     except IOError as ex:
-        print(ex)
+        app.logger.error(ex)
         return "Unable to save file", 500
 
 
