@@ -62,16 +62,6 @@ cp certificate.crt .\charts\sso-server\files
 ```bash
 helm install sso-server .\sso-server-1.0.0.tgz
 ```
-## Install ingress controller
-```pwsh
-helm repo add apisix https://charts.apiseven.com
-helm repo add bitnami https://charts.bitnami.com/bitnami
-helm repo update
-helm install apisix apisix/apisix  --namespace default `
- --set gateway.type=NodePort --set gateway.tls.enabled=true --set gateway.tls.nodePort=31152 `
- --set ingress-controller.enabled=true --set ingress-controller.config.apisix.serviceNamespace=default
-```
-
 ## Admin web server
 ### Build docker and helm package
 ```pwsh
@@ -80,4 +70,14 @@ helm package .\charts\admin-web-server\
 ### Helm install
 ```pwsh
 helm install admin-web-server .\admin-web-server-1.0.0.tgz
+```
+
+## Install ingress controller
+```pwsh
+helm repo add apisix https://charts.apiseven.com
+helm repo add bitnami https://charts.bitnami.com/bitnami
+helm repo update
+helm install apisix apisix/apisix  --namespace default `
+ --set gateway.type=NodePort --set gateway.tls.enabled=true --set gateway.tls.nodePort=31152 `
+ --set ingress-controller.enabled=true --set ingress-controller.config.apisix.serviceNamespace=default
 ```

@@ -1,0 +1,22 @@
+
+<input type="file" class="file-input" (change)="onFileSelected($event)" #fileUpload>
+
+<div class="file-upload">
+
+{{fileName || "No file uploaded yet."}}
+
+<button mat-mini-fab color="primary" class="upload-btn" (click)="fileUpload.click()">
+    <mat-icon>attach_file</mat-icon>
+</button>
+</div>
+
+<ul class="models">
+    <li *ngFor="let model of models">
+        {{model.id}}<br>
+        {{model.name}}<br>
+        <button *ngIf="!model.active" type="button" (click)="activateModel(model)">Activate</button>
+        <button *ngIf="model.active" type="button" (click)="deactivateModel(model)">Dectivate</button><br>
+        <button *ngIf="!model.active" type="button" (click)="deleteModel(model)">Delete</button>
+        <div *ngIf="model.active" style="background-color: green;"><span style="padding-left: 1em; padding-right: 1em;"></span></div>
+    </li>
+</ul>

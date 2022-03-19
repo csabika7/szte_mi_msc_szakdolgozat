@@ -21,12 +21,17 @@ class Model(db.Model):
     id = db.Column(db.String(36), primary_key=True)
     name = db.Column(db.String(80), unique=True, nullable=False)
     file_name = db.Column(db.String(120), unique=True, nullable=False)
+    marked_for_delete = db.Column(db.Boolean, default=False)
 
 
 db.create_all()
 
 
 # Routes and helper methods
+def model_not_exists(m):
+    return not m or m.marked_for_delete
+
+
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -58,10 +63,27 @@ def store():
         return "Unable to save file", 500
 
 
+@app.route("/v1/model-store/model/<string:model_id>", methods=["DELETE"])
+def delete_model(model_id):
+    app.logger.info("Deleting {}".format(model_id))
+    m = Model.query.get(model_id)
+    if model_not_exists(m):
+        return "", 404
+    m.marked_for_delete = True
+    db.session.commit()
+    app.logger.info("{} is marked for deletion.".format(model_id))
+    os.remove(os.path.join(MODEL_STORAGE_PATH, m.file_name))
+    app.logger.info("File associated with {}.".format(model_id))
+    db.session.delete(m)
+    db.session.commit()
+    app.logger.info("{} is permanently deleted".format(model_id))
+    return "", 200
+
+
 @app.route("/v1/model-store/model/<string:model_id>", methods=["GET"])
 def get_metadata(model_id):
     m = Model.query.get(model_id)
-    if not m:
+    if model_not_exists(m):
         return "", 404
     return {
         "id": m.id,
@@ -72,13 +94,15 @@ def get_metadata(model_id):
 @app.route("/v1/model-store/model/list", methods=["GET"])
 def get_all_metadata():
     model_list = Model.query.all()
-    return [{"id": m.id, "name": m.name} for m in model_list]
+    return {
+        "models": [{"id": m.id, "name": m.name} for m in model_list if not m.marked_for_delete]
+    }
 
 
 @app.route("/v1/model-store/model/download/<string:model_id>", methods=["GET"])
 def download_model_file(model_id):
     m = Model.query.get(model_id)
-    if not m:
+    if model_not_exists(m):
         return "", 404
     return send_from_directory(MODEL_STORAGE_PATH, m.file_name)
 
