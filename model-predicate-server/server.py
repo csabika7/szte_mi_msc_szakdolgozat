@@ -31,9 +31,12 @@ print("Model loaded.")
 
 @app.route("/v1/model/predict", methods=["POST"])
 def predict():
+    file = request.files["img"]
+    if not file:
+        return "Image file is required.", 400
+    if file.filename == "":
+        return "Image file name is empty.", 400
     try:
-        app.logger.info("Received request to do prediction")
-        file = request.files["img"]
         input_img = convert_img_to_model_input(file.read())
         prediction = MODEL.predict(input_img)
         return str(prediction.tolist()[0][0])

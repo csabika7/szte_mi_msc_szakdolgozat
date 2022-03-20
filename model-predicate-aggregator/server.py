@@ -71,10 +71,13 @@ def send_predicate(file, url):
     return resp.data, resp.status
 
 
-@app.route("/v1/model/predicate/", methods=["POST"])
+@app.route("/v1/model/predict/", methods=["POST"])
 def predicate():
-    app.logger.info("predicate")
     file = request.files["img"]
+    if not file:
+        return "Image file is required.", 400
+    if file.filename == "":
+        return "Image file name is empty.", 400
     response = {"name": None, "certainty": 0.0}
     for model_name, service_url in SERVICES.items():
         data, status = send_predicate(file, service_url)
@@ -83,7 +86,7 @@ def predicate():
             response["name"] = model_name
             response["certainty"] = prediction
         if status != 200:
-            return "", 503
+            return "", 500
     return response, 200
 
 

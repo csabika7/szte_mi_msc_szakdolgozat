@@ -105,7 +105,7 @@ def activate(model_id):
     if status == 404:
         return "", 404
     if status != 200:
-        return "Unable to retrieve model for id {}".format(model_id), 500
+        return "", 500
 
     service_template = read_service_template(model["id"], model["name"])
     deployment_template = read_deployment_template(model["id"], model["name"])
@@ -119,7 +119,7 @@ def deactivate(model_id):
     if status == 404:
         return "", 404
     if status != 200:
-        return "Unable to retrieve model for id {}".format(model_id), 500
+        return "", 500
 
     with kubernetes.client.ApiClient(configuration) as api_client:
         apps_v1_api = kubernetes.client.AppsV1Api(api_client)
@@ -135,7 +135,7 @@ def deactivate(model_id):
 def get_services():
     model_list_resp, status = list_models()
     if status != 200:
-        return "Unable to retrieve model list", 500
+        return "", 500
 
     with kubernetes.client.ApiClient(configuration) as api_client:
         apps_v1_api = kubernetes.client.AppsV1Api(api_client)
