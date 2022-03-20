@@ -9,7 +9,11 @@ spec:
         hosts:
           - "localhost"
         paths:
-          - "/get"
+          - "/"
+          - "/runtime*"
+          - "/polyfills*"
+          - "/main*"
+          - "/styles*"
           - "/redirect_uri"
       backends:
         - serviceName: admin-web-server-service
@@ -24,3 +28,8 @@ spec:
             realm: {{ .Values.sso.realm }}
             bearer_only: false
             redirect_uri: /redirect_uri
+        - name: proxy-rewrite
+          enable: true
+          config:
+            host: localhost
+            scheme: http

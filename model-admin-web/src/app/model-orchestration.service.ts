@@ -15,7 +15,7 @@ export class ModelOrchestrationService {
         'Content-Type':  'application/json'
       })
     };
-    return this.httpClient.post(`https://localhost:31152/v1/model-orchestrator/model/activate/${modelId}`, httpOptions);
+    return this.httpClient.post(`/v1/model-orchestrator/model/activate/${modelId}`, httpOptions);
   }
 
   deactivateModel(modelId: string) {
@@ -24,15 +24,15 @@ export class ModelOrchestrationService {
         'Content-Type':  'application/json'
       })
     };
-    return this.httpClient.post(`https://localhost:31152/v1/model-orchestrator/model/deactivate/${modelId}`, httpOptions);
+    return this.httpClient.post(`/v1/model-orchestrator/model/deactivate/${modelId}`, httpOptions);
   }
- 
+
   listModels() {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type':  'application/json'
       })
     };
-    return this.httpClient.get('https://localhost:31152/v1/model-orchestrator/model/list', httpOptions);
+    return this.httpClient.get('/v1/model-orchestrator/model/list', httpOptions);
   }
 }

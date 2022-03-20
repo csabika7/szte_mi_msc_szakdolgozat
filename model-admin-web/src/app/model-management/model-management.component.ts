@@ -34,7 +34,7 @@ export class ModelManagementComponent implements OnInit {
         const formData = new FormData();
         formData.append("name", "random");
         formData.append("model_file", file);
-        const upload$ = this.http.post("https://localhost:31152/v1/model-store/model", formData);
+        const upload$ = this.http.post("/v1/model-store/model", formData);
         upload$.subscribe();
     }
   }
@@ -61,7 +61,6 @@ export class ModelManagementComponent implements OnInit {
     });
   }
 
-  
   deactivateModel(selectedModel: Model) {
     this.modelOrchestrationService.deactivateModel(selectedModel.id).subscribe((data: any) => {
       selectedModel.active = false;

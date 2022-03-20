@@ -9,6 +9,6 @@ export class ModelStorageService {
   constructor(private httpClient: HttpClient) { }
 
   deleteModel(model_id: string) {
-    return this.httpClient.delete(`https://localhost:31152/v1/model-store/model/${model_id}`);
+    return this.httpClient.delete(`/v1/model-store/model/${model_id}`);
   }
 }

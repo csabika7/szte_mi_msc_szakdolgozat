@@ -9,7 +9,18 @@ Requirements for the model:
 - Keras can import the model by calling: ```tensorflow.keras.models.load_model```
 - Model takes 227x227x3 matrix as an input.
 - Model does binary classification
-
+## Prerequisites
+```pwsh
+helm repo add apisix https://charts.apiseven.com
+helm repo add bitnami https://charts.bitnami.com/bitnami
+helm repo update
+```
+## Install ingress controller
+```pwsh
+helm install apisix apisix/apisix  --namespace default `
+ --set gateway.type=NodePort --set gateway.tls.enabled=true --set gateway.tls.nodePort=31152 `
+ --set ingress-controller.enabled=true --set ingress-controller.config.apisix.serviceNamespace=default
+```
 ## Model Predicate Aggregator server
 ### Build docker and helm package
 ```pwsh
@@ -65,19 +76,10 @@ helm install sso-server .\sso-server-1.0.0.tgz
 ## Admin web server
 ### Build docker and helm package
 ```pwsh
+docker build .\model-admin-web -t model-admin-web:0.1 --no-cache
 helm package .\charts\admin-web-server\
 ```
 ### Helm install
 ```pwsh
 helm install admin-web-server .\admin-web-server-1.0.0.tgz
-```
-
-## Install ingress controller
-```pwsh
-helm repo add apisix https://charts.apiseven.com
-helm repo add bitnami https://charts.bitnami.com/bitnami
-helm repo update
-helm install apisix apisix/apisix  --namespace default `
- --set gateway.type=NodePort --set gateway.tls.enabled=true --set gateway.tls.nodePort=31152 `
- --set ingress-controller.enabled=true --set ingress-controller.config.apisix.serviceNamespace=default
 ```

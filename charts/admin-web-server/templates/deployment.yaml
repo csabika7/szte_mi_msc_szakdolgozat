@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: admin-web-server
-        image: kennethreitz/httpbin
+        image: model-admin-web:0.1
         ports:
         - name: https
           containerPort: 80
