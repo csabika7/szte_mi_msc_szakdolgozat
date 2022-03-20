@@ -10,6 +10,21 @@ Requirements for the model:
 - Model takes 227x227x3 matrix as an input.
 - Model does binary classification
 ## Prerequisites
+This application runs on Kubernetes.
+Installation guides for installing Kubernetes:
+
+Windows:
+- Docker Desktop: https://docs.docker.com/desktop/windows/install/
+- Kubernetes: https://docs.docker.com/desktop/kubernetes/
+
+Linux:
+- Docker: https://docs.docker.com/engine/install/#server
+- Kubernetes: https://minikube.sigs.k8s.io/docs/start/
+
+The deployment of the application is done with Helm package manager.
+
+Installation guide for installing Helm: https://helm.sh/docs/intro/install/
+## Helm repo update
 ```pwsh
 helm repo add apisix https://charts.apiseven.com
 helm repo add bitnami https://charts.bitnami.com/bitnami
