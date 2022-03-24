@@ -1,23 +1,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: model-predicate-aggregator-deployment
+  name: model-prediction-aggregator-deployment
   labels:
-    app: model-predicate-aggregator
+    app: model-prediction-aggregator
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: model-predicate-aggregator
+      app: model-prediction-aggregator
   template:
     metadata:
       labels:
-        app: model-predicate-aggregator
+        app: model-prediction-aggregator
     spec:
-      serviceAccountName: model-predicate-aggregator-service-account
+      serviceAccountName: model-prediction-aggregator-service-account
       containers:
-      - name: model-predicate-aggregator
-        image: model-predicate-aggregator:0.1
+      - name: model-prediction-aggregator
+        image: model-prediction-aggregator:1.0
         ports:
         - containerPort: 5000
         env:

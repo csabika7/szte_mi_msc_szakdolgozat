@@ -13,7 +13,7 @@ spec:
       restartPolicy: Never
       containers:
       - name: sso-server-identity-provider-post-install-job
-        image: sso-server-post-install:0.1
+        image: sso-server-post-install:1.0
         volumeMounts:
           - name: identity-provider-secret
             mountPath: "/realm_data"

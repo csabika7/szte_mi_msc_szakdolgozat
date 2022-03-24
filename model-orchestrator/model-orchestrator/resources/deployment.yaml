@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: "{container_name}"
-        image: model-predicate-server:0.1
+        image: model-prediction-server:1.0
         ports:
           - containerPort: 5000
         env:

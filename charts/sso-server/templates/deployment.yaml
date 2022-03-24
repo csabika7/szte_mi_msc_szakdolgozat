@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: sso-server
-        image: sso-server:0.1
+        image: sso-server:1.0
         ports:
         - name: https
           containerPort: 8443

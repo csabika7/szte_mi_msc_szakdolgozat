@@ -17,7 +17,7 @@ spec:
       serviceAccountName: model-orchestrator-service-account
       containers:
       - name: model-orchestrator
-        image: model-orchestrator:0.1
+        image: model-orchestrator:1.0
         ports:
         - containerPort: 5000
         env:

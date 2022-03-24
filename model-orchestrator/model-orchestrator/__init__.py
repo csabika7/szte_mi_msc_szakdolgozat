@@ -1,3 +1,4 @@
+from pkg_resources import resource_string
 from flask import Flask
 import os
 import kubernetes
@@ -28,7 +29,6 @@ DOWNLOAD_MODEL_URL_TEMPLATE = "{}://{}:{}/v1/model-store/model/download/{}"
 
 LIST_MODELS_URL = LIST_MODELS_URL_TEMPLATE.format(MODEL_STORAGE_PROTO, MODEL_STORAGE_HOST, MODEL_STORAGE_PORT)
 
-TEMPLATES_DIR = os.environ["TEMPLATES_DIR"]
 
 # Flask setup (web, db)
 app = Flask(__name__)
@@ -41,37 +41,33 @@ configuration.ssl_ca_cert = SERVICE_ACCOUNT_CA_CERT_PATH
 
 
 def read_service_template(model_id, model_name):
-    template_path = os.path.join(TEMPLATES_DIR, "service.yaml")
-    with open(template_path) as f:
-        template_text = f.read()
-        service_name = "model-predicate-{}-service".format(model_id)
-        app_name = "model-predicate-{}".format(model_id)
-        formatted_template_text = template_text.format(service_name=service_name,
-                                                       app_name=app_name,
-                                                       model_id=model_id,
-                                                       model_name=model_name)
-        return yaml.load(formatted_template_text, Loader=yaml.FullLoader)
+    template_text = resource_string("model-orchestrator.resources", "service.yaml").decode("utf-8")
+    service_name = "model-prediction-{}-service".format(model_id)
+    app_name = "model-prediction-{}".format(model_id)
+    formatted_template_text = template_text.format(service_name=service_name,
+                                                   app_name=app_name,
+                                                   model_id=model_id,
+                                                   model_name=model_name)
+    return yaml.load(formatted_template_text, Loader=yaml.FullLoader)
 
 
 def read_deployment_template(model_id, model_name):
-    template_path = os.path.join(TEMPLATES_DIR, "deployment.yaml")
-    with open(template_path) as f:
-        template_text = f.read()
-        deployment_name = "model-predicate-{}-deployment".format(model_id)
-        app_name = "model-predicate-{}".format(model_id)
-        container_name = "model-predicate-{}".format(model_id)
-        model_url = DOWNLOAD_MODEL_URL_TEMPLATE.format(MODEL_STORAGE_PROTO,
-                                                       MODEL_STORAGE_HOST,
-                                                       MODEL_STORAGE_PORT,
-                                                       model_id)
-        formatted_template_text = template_text.format(deployment_name=deployment_name,
-                                                       app_name=app_name,
-                                                       container_name=container_name,
-                                                       model_id=model_id,
-                                                       model_name=model_name,
-                                                       model_url=model_url)
-        app.logger.info(formatted_template_text)
-        return yaml.load(formatted_template_text, Loader=yaml.FullLoader)
+    template_text = resource_string("model-orchestrator.resources", "deployment.yaml").decode("utf-8")
+    deployment_name = "model-prediction-{}-deployment".format(model_id)
+    app_name = "model-prediction-{}".format(model_id)
+    container_name = "model-prediction-{}".format(model_id)
+    model_url = DOWNLOAD_MODEL_URL_TEMPLATE.format(MODEL_STORAGE_PROTO,
+                                                   MODEL_STORAGE_HOST,
+                                                   MODEL_STORAGE_PORT,
+                                                   model_id)
+    formatted_template_text = template_text.format(deployment_name=deployment_name,
+                                                   app_name=app_name,
+                                                   container_name=container_name,
+                                                   model_id=model_id,
+                                                   model_name=model_name,
+                                                   model_url=model_url)
+    app.logger.info(formatted_template_text)
+    return yaml.load(formatted_template_text, Loader=yaml.FullLoader)
 
 
 def create_kubernetes_objects(objects):
@@ -124,10 +120,10 @@ def deactivate(model_id):
     with kubernetes.client.ApiClient(configuration) as api_client:
         apps_v1_api = kubernetes.client.AppsV1Api(api_client)
         apps_v1_api.delete_namespaced_deployment(namespace=NAMESPACE,
-                                                 name="model-predicate-{}-deployment".format(model_id))
+                                                 name="model-prediction-{}-deployment".format(model_id))
         v1 = kubernetes.client.CoreV1Api(api_client)
         v1.delete_namespaced_service(namespace=NAMESPACE,
-                                     name="model-predicate-{}-service".format(model_id))
+                                     name="model-prediction-{}-service".format(model_id))
     return "", 200
 
 

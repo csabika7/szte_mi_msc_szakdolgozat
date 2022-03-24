@@ -1,5 +1,4 @@
-from flask import Flask, request, jsonify
-import base64
+from flask import Flask, request
 import tensorflow as tf
 import urllib3
 import os
@@ -52,4 +51,4 @@ def convert_img_to_model_input(raw_img):
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host="0.0.0.0")
+    app.run(host="0.0.0.0")

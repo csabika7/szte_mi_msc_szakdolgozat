@@ -24,7 +24,12 @@ Linux:
 The deployment of the application is done with Helm package manager.
 
 Installation guide for installing Helm: https://helm.sh/docs/intro/install/
-## Helm repo update
+## Initalization steps
+### Build Base Docker image
+```pwsh
+docker build .\docker\base -t builder-base:1.0
+```
+### Helm repo update
 ```pwsh
 helm repo add apisix https://charts.apiseven.com
 helm repo add bitnami https://charts.bitnami.com/bitnami
@@ -36,46 +41,15 @@ helm install apisix apisix/apisix  --namespace default `
  --set gateway.type=NodePort --set gateway.tls.enabled=true --set gateway.tls.nodePort=31152 `
  --set ingress-controller.enabled=true --set ingress-controller.config.apisix.serviceNamespace=default
 ```
-## Model Predicate Aggregator server
-### Build docker and helm package
-```pwsh
-docker build .\model-predicate-aggregator -t model-predicate-aggregator:0.1 --no-cache
-helm package .\charts\model-predicate-aggregator
-```
-### Helm install
-```pwsh
-helm install model-predicate-aggregator .\model-predicate-aggregator-1.0.0.tgz
-```
-## Model Storage server
-### Build docker and helm package
-```pwsh
-docker build .\model-storage -t model-storage:0.1 --no-cache
-helm package .\charts\model-storage\
-```
-### Helm istall
-```pwsh
-helm install model-storage .\model-storage-1.0.0.tgz
-```
-## Model Orchestrator
-### Build docker and helm package
-```pwsh
-docker build .\model-predicate-server -t model-predicate-server:0.1 --no-cache
-docker build .\model-orchestrator -t model-orchestrator:0.1 --no-cache
-helm package .\charts\model-orchestrator
-```
-### Helm install
-```pwsh
-helm install model-orchestrator .\model-orchestrator-1.0.0.tgz
-```
 ## SSO server
 ### Build docker and helm package
 ```pwsh
-docker build .\sso-server -t sso-server:0.1 --no-cache
+docker build .\sso-server -t sso-server:1.0 --no-cache
 helm package .\charts\sso-server
 ```
 ### Build image for post install hook
 ```pwsh
-docker build .\sso-server\realm-setup -t sso-server-post-install:0.1 --no-cache
+docker build .\sso-server\realm-setup -t sso-server-post-install:1.0 --no-cache
 ```
 ### Generate self signed cert
 Reference: https://wiki.openssl.org/index.php/Binaries
@@ -88,10 +62,41 @@ cp certificate.crt .\charts\sso-server\files
 ```bash
 helm install sso-server .\sso-server-1.0.0.tgz
 ```
+## Model Storage server
+### Build docker and helm package
+```pwsh
+docker build .\model-storage -f .\docker\builder\Dockerfile -t model-storage:1.0 --build-arg PROJECT_NAME=model-storage
+helm package .\charts\model-storage\
+```
+### Helm istall
+```pwsh
+helm install model-storage .\model-storage-1.0.0.tgz
+```
+## Model Orchestrator
+### Build docker and helm package
+```pwsh
+docker build .\model-prediction-server -f .\docker\builder\Dockerfile -t model-prediction-server:1.0 --build-arg PROJECT_NAME=model-prediction-server
+docker build .\model-orchestrator -f .\docker\builder\Dockerfile -t model-orchestrator:1.0 --build-arg PROJECT_NAME=model-orchestrator
+helm package .\charts\model-orchestrator
+```
+### Helm install
+```pwsh
+helm install model-orchestrator .\model-orchestrator-1.0.0.tgz
+```
+## Model Predicate Aggregator server
+### Build docker and helm package
+```pwsh
+docker build .\model-prediction-aggregator -f .\docker\builder\Dockerfile -t model-prediction-aggregator:1.0 --build-arg PROJECT_NAME=model-prediction-aggregator
+helm package .\charts\model-prediction-aggregator
+```
+### Helm install
+```pwsh
+helm install model-prediction-aggregator .\model-prediction-aggregator-1.0.0.tgz
+```
 ## Admin web server
 ### Build docker and helm package
 ```pwsh
-docker build .\model-admin-web -t model-admin-web:0.1 --no-cache
+docker build .\model-admin-web -t model-admin-web:1.0
 helm package .\charts\admin-web-server\
 ```
 ### Helm install
