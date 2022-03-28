@@ -44,19 +44,19 @@ helm install apisix apisix/apisix  --namespace default `
 ## SSO server
 ### Build docker and helm package
 ```pwsh
-docker build .\sso_server -t sso-server:1.0 --no-cache
-helm package .\charts\sso_server
+docker build .\sso-server -t sso-server:1.0 --no-cache
+helm package .\charts\sso-server
 ```
 ### Build image for post install hook
 ```pwsh
-docker build .\sso_server\realm_setup -t sso-server-post-install:1.0 --no-cache
+docker build .\sso-server\realm-setup -t sso-server-post-install:1.0 --no-cache
 ```
 ### Generate self signed cert
 Reference: https://wiki.openssl.org/index.php/Binaries
 ```pwsh
 openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -keyout privateKey.key -out certificate.crt
-cp privateKey.key .\charts\sso_server\files
-cp certificate.crt .\charts\sso_server\files
+cp privateKey.key .\charts\sso-server\files
+cp certificate.crt .\charts\sso-server\files
 ```
 ### Helm install
 ```bash
@@ -65,8 +65,8 @@ helm install sso-server .\sso-server-1.0.0.tgz
 ## Model Storage server
 ### Build docker and helm package
 ```pwsh
-docker build .\model_storage -f .\docker\builder\Dockerfile -t model-storage:1.0 --build-arg PROJECT_NAME=model_storage
-helm package .\charts\model_storage\
+docker build .\model-storage -f .\docker\builder\Dockerfile -t model-storage:1.0 --build-arg PROJECT_NAME=model-storage --build-arg MODULE_NAME=model_storage
+helm package .\charts\model-storage\
 ```
 ### Helm istall
 ```pwsh
@@ -75,9 +75,9 @@ helm install model-storage .\model-storage-1.0.0.tgz
 ## Model Orchestrator
 ### Build docker and helm package
 ```pwsh
-docker build .\model_prediction_server -f .\docker\builder\Dockerfile -t model-prediction-server:1.0 --build-arg PROJECT_NAME=model_prediction_server
-docker build .\model_orchestrator -f .\docker\builder\Dockerfile -t model-orchestrator:1.0 --build-arg PROJECT_NAME=model_orchestrator
-helm package .\charts\model_orchestrator
+docker build .\model-prediction-server -f .\docker\builder\Dockerfile -t model-prediction-server:1.0 --build-arg PROJECT_NAME=model-prediction-server --build-arg MODULE_NAME=model_prediction_server
+docker build .\model-orchestrator -f .\docker\builder\Dockerfile -t model-orchestrator:1.0 --build-arg PROJECT_NAME=model-orchestrator --build-arg MODULE_NAME=model_orchestrator
+helm package .\charts\model-orchestrator
 ```
 ### Helm install
 ```pwsh
@@ -86,8 +86,8 @@ helm install model-orchestrator .\model-orchestrator-1.0.0.tgz
 ## Model Predicate Aggregator server
 ### Build docker and helm package
 ```pwsh
-docker build .\model_prediction_aggregator -f .\docker\builder\Dockerfile -t model-prediction-aggregator:1.0 --build-arg PROJECT_NAME=model_prediction_aggregator
-helm package .\charts\model_prediction_aggregator
+docker build .\model-prediction-aggregator -f .\docker\builder\Dockerfile -t model-prediction-aggregator:1.0 --build-arg PROJECT_NAME=model-prediction-aggregator --build-arg MODULE_NAME=model_prediction_aggregator
+helm package .\charts\model-prediction-aggregator
 ```
 ### Helm install
 ```pwsh
