@@ -75,6 +75,7 @@ helm install model-storage .\model-storage-1.0.0.tgz
 ## Model Orchestrator
 ### Build docker and helm package
 ```pwsh
+docker build .\model-prediction-server-init -t model-prediction-server-init:1.0
 docker build .\model-prediction-server -f .\docker\builder\Dockerfile -t model-prediction-server:1.0 --build-arg PROJECT_NAME=model-prediction-server --build-arg MODULE_NAME=model_prediction_server
 docker build .\model-orchestrator -f .\docker\builder\Dockerfile -t model-orchestrator:1.0 --build-arg PROJECT_NAME=model-orchestrator --build-arg MODULE_NAME=model_orchestrator
 helm package .\charts\model-orchestrator

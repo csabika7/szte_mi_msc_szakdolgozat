@@ -18,6 +18,9 @@ spec:
       labels:
         app: "{app_name}"
     spec:
+      initContainers:
+      - name: download-model
+        image: model-prediction-server-init:1.0
       containers:
       - name: "{container_name}"
         image: model-prediction-server:1.0
