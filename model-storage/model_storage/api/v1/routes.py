@@ -1,4 +1,4 @@
-from flask import Blueprint, request, send_from_directory
+from flask import Blueprint, request, send_from_directory, current_app
 from model_storage.files import ModelFileHandler, InvalidFileExtension
 from model_storage.database import db
 from model_storage.db_models import MLModel
@@ -20,7 +20,7 @@ def store():
     if name is None or name == "":
         return "Required field: 'name'.", 400
     try:
-        file_handler = ModelFileHandler(file, os.environ["MODEL_STORAGE_PATH"])
+        file_handler = ModelFileHandler(file, current_app.config["MODEL_STORAGE_PATH"])
         file_name = file_handler.save()
 
         model_id = str(uuid.uuid4())
@@ -41,7 +41,7 @@ def delete_model(model_id):
         return "", 404
     db.session.delete(m)
     db.session.commit()
-    os.remove(os.path.join(os.environ["MODEL_STORAGE_PATH"], m.file_name))
+    os.remove(os.path.join(current_app.config["MODEL_STORAGE_PATH"], m.file_name))
     return "", 200
 
 
@@ -69,4 +69,4 @@ def download_model_file(model_id):
     m = MLModel.query.get(model_id)
     if not m:
         return "", 404
-    return send_from_directory(os.environ["MODEL_STORAGE_PATH"], m.file_name)
+    return send_from_directory(current_app.config["MODEL_STORAGE_PATH"], m.file_name)

@@ -25,7 +25,7 @@ spec:
       - name: "{container_name}"
         image: model-prediction-server:1.0
         ports:
-          - containerPort: 5000
+          - containerPort: 80
         env:
           - name: MODEL_FILE_URL
             value: "{model_url}"

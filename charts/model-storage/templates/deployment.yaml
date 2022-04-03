@@ -18,7 +18,7 @@ spec:
       - name: model-storage
         image: model-storage:1.0
         ports:
-        - containerPort: 5000
+        - containerPort: 80
         env:
         - name: MODEL_STORAGE_PATH
           value: /data

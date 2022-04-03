@@ -10,7 +10,8 @@ def get_config():
     meta_data_db_file_name = "metadata.db"
     meta_data_db_path = str(os.path.join(model_storage_path, meta_data_db_file_name))
     conf = dict()
-    conf['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///{}'.format(meta_data_db_path)
+    conf["SQLALCHEMY_DATABASE_URI"] = "sqlite:///{}".format(meta_data_db_path)
+    conf["MODEL_STORAGE_PATH"] = model_storage_path
     return conf
 
 

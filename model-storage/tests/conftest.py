@@ -12,12 +12,11 @@ def app():
     os.mkdir(upload_path)
     app = create_app({
         "TESTING": True,
-        "SQLALCHEMY_DATABASE_URI": "sqlite:///{}".format(db_path)
+        "SQLALCHEMY_DATABASE_URI": "sqlite:///{}".format(db_path),
+        "MODEL_STORAGE_PATH": str(upload_path)
     })
 
     init_database(app)
-
-    os.environ["MODEL_STORAGE_PATH"] = str(upload_path)
 
     yield app
 
