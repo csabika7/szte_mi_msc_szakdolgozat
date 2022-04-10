@@ -1,6 +1,5 @@
 from flask import Flask
 from model_storage.database import db
-from model_storage.db_models import MLModel
 from model_storage.api.v1.routes import api_v1
 import os
 

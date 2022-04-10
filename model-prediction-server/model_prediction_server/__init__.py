@@ -11,8 +11,3 @@ def create_app(config=None):
     app.register_blueprint(blueprint=api_v1, url_prefix="/v1/model")
 
     return app
-
-
-if __name__ == '__main__':
-    app = create_app()
-    app.run(host="0.0.0.0")

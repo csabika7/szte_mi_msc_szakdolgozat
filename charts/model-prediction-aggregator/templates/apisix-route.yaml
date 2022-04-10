@@ -9,7 +9,7 @@ spec:
         hosts:
         - localhost
         paths:
-          - /v1/model/predict/*
+          - /v1/model/predict
       backends:
         - serviceName: model-prediction-aggregator-service
           servicePort: 80

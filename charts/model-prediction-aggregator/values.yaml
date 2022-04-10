@@ -1,0 +1,10 @@
+redis:
+  host: message-broker-redis-master
+  port: 6379
+  channel: model_activation
+
+model:
+  prediction:
+    aggregator:
+      host: localhost
+      port: 80

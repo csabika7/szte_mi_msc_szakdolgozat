@@ -1,8 +1,10 @@
 from flask import Blueprint, current_app
+from model_orchestrator.message_queue import MessageQueueClient
 from model_orchestrator.model_store import ModelStorageClient
 from model_orchestrator.kubernetes_api import ModelPredictionServerHandler
 import kubernetes
 import os
+import json
 
 api_v1 = Blueprint("model-orchestrator", __name__)
 
@@ -43,8 +45,15 @@ def activate(model_id):
     if status != 200:
         return "", 500
 
+    current_app.logger.info("Creating model prediction server for {}.", model_id)
     server_handler = ModelPredictionServerHandler(get_kube_config(), get_namespace())
     server_handler.create_model_prediction_server(model["id"], model["name"], client.get_download_url(model["id"]))
+
+    redis_channel = current_app.config.get("REDIS_CHANNEL")
+    current_app.logger.info("Sending state change message for {} to channel {}. New state: activated",
+                            model_id, redis_channel)
+    queue = MessageQueueClient(host=current_app.config.get("REDIS_HOST"), port=current_app.config.get("REDIS_PORT"))
+    queue.send_message(channel=redis_channel, message=json.dumps({"model_id": model_id, "state": "activated"}))
 
     return "", 200
 
@@ -58,8 +67,15 @@ def deactivate(model_id):
     if status != 200:
         return "", 500
 
+    current_app.logger.info("Deleting model prediction server for {}.", model_id)
     server_handler = ModelPredictionServerHandler(get_kube_config(), get_namespace())
     server_handler.delete_model_prediction_server(model["id"])
+
+    redis_channel = current_app.config.get("REDIS_CHANNEL")
+    current_app.logger.info("Sending state change message for {} to channel {}. New state: deactivated",
+                            model_id, redis_channel)
+    queue = MessageQueueClient(host=current_app.config.get("REDIS_HOST"), port=current_app.config.get("REDIS_PORT"))
+    queue.send_message(channel=redis_channel, message=json.dumps({"model_id": model_id, "state": "deactivated"}))
 
     return "", 200
 

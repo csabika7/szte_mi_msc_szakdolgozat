@@ -1,4 +1,4 @@
-FROM builder-base:1.0 as builder
+FROM python:3.8.13 as builder
 
 ARG PROJECT_NAME
 ARG MODULE_NAME
@@ -12,25 +12,18 @@ WORKDIR /${PROJECT_NAME}
 
 RUN python setup.py bdist_wheel
 
-FROM nginx:1.21.6
+FROM python:3.8.13
 
 ARG PROJECT_NAME
 ARG MODULE_NAME
 ENV PROJECT_NAME=${PROJECT_NAME}
 ENV MODULE_NAME=${MODULE_NAME}
 
-RUN apt-get update && apt-get install -y build-essential python3-dev python3-pip
 RUN pip install uwsgi
 
 COPY --from=builder /${PROJECT_NAME}/dist/*.whl /tmp
-RUN pip install /tmp/*
+RUN pip install /tmp/*.whl
 RUN rm /tmp/*
 
-COPY --from=builder  /nginx.conf /etc/nginx
-COPY --from=builder  /start_uwsgi.sh /
-RUN chmod 755 /start_uwsgi.sh
-COPY --from=builder  /start.sh /
-RUN chmod 755 /start.sh
-
-ENTRYPOINT /start.sh $PROJECT_NAME $MODULE_NAME
+ENTRYPOINT uwsgi -s /tmp/uwsgi_service.sock --master --http 0.0.0.0:80 --manage-script-name --mount /$PROJECT_NAME=$MODULE_NAME.uwsgi:app --chmod-socket=666 --limit-post=1073741824 --log-master
 CMD [""]

@@ -21,5 +21,48 @@ spec:
         ports:
         - containerPort: 80
         env:
-        - name: LABEL_SELECTOR_FOR_MODEL_PREDICATE_SERVICES
-          value: "managed_by=model-orchestrator"
+          - name: ACTIVATED_MODEL_DB_SOCKET
+            value: /var/run/redis/redis.socket
+          - name: ACTIVATED_MODEL_KEY
+            value: activated_models
+        volumeMounts:
+          - mountPath: /var/run/redis
+            name: redis-socket
+      - name: model-activation-listener
+        image: model-activation-listener:1.0
+        env:
+          - name: LABEL_SELECTOR_FOR_MODEL_PREDICATE_SERVICES
+            value: "managed_by=model-orchestrator"
+          - name: REDIS_HOST
+            value: {{ .Values.redis.host }}
+          - name: REDIS_PORT
+            value: {{ .Values.redis.port | quote}}
+          - name: REDIS_CHANNEL
+            value: {{ .Values.redis.channel }}
+          - name: MODEL_PREDICTION_AGGREGATOR_HOST
+            value: {{ .Values.model.prediction.aggregator.host }}
+          - name: MODEL_PREDICTION_AGGREGATOR_PORT
+            value: {{ .Values.model.prediction.aggregator.port | quote }}
+          - name: ACTIVATED_MODEL_DB_SOCKET
+            value: /var/run/redis/redis.socket
+          - name: ACTIVATED_MODEL_KEY
+            value: activated_models
+        volumeMounts:
+          - mountPath: /var/run/redis
+            name: redis-socket
+      - name: activated-model-db
+        image: redis:7.0-rc
+        volumeMounts:
+          - mountPath: /data
+            name: activated-model-data-volume
+          - mountPath: /var/run/redis
+            name: redis-socket
+        command:
+          - redis-server
+          - --save 60 1
+          - --unixsocket /var/run/redis/redis.socket
+      volumes:
+      - name: activated-model-data-volume
+        emptyDir: {}
+      - name: redis-socket
+        emptyDir: {}

@@ -21,16 +21,26 @@ spec:
       initContainers:
       - name: download-model
         image: model-prediction-server-init:1.0
+        env:
+          - name: MODEL_FILE_URL
+            value: "{model_url}"
+          - name: MODEL_DATA_VOLUME
+            value: /data
+          - name: MODEL_FILE_NAME
+            value: model.hdf5
+        volumeMounts:
+          - mountPath: /data
+            name: model-data-volume
       containers:
       - name: "{container_name}"
         image: model-prediction-server:1.0
         ports:
           - containerPort: 80
         env:
-          - name: MODEL_FILE_URL
-            value: "{model_url}"
           - name: MODEL_DATA_VOLUME
             value: /data
+          - name: MODEL_FILE_NAME
+            value: model.hdf5
         volumeMounts:
           - mountPath: /data
             name: model-data-volume
