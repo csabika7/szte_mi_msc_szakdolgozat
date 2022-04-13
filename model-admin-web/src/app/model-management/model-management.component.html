@@ -1,22 +1,46 @@
+<p-dialog header="Create new model" [(visible)]="display" [breakpoints]="{'960px': '75vw', '640px': '100vw'}" [style]="{width: '50vw'}" [modal]="true">
+    <ng-template pTemplate="content" >
+        <span class="p-float-label">
+            <input id="model-name-input" type="text" pInputText  [(ngModel)]="modelName" />
+            <label for="model-name-input">Model name</label>
+        </span>
+        <p-fileUpload name="myfile[]" url="./upload.php"></p-fileUpload>
+    </ng-template>
 
-<input type="file" class="file-input" (change)="onFileSelected($event)" #fileUpload>
+    <ng-template pTemplate="footer" >
+        <button pButton type="button" label="Upload and create" (click)="upload()"></button>
+    </ng-template>
+</p-dialog>
 
-<div class="file-upload">
-
-{{fileName || "No file uploaded yet."}}
-
-<button mat-mini-fab color="primary" class="upload-btn" (click)="fileUpload.click()">
-    <mat-icon>attach_file</mat-icon>
-</button>
+<div class="card">
+    <p-dataView #dv [value]="models" layout="grid" [paginator]="true" [rows]="9" filterBy="name" >
+        <ng-template pTemplate="header">
+            <p> </p>
+            <div class="flex flex-column md:flex-row md:justify-content-between">
+                <span class="p-input-icon-left mb-2 md:mb-0">
+                    <i class="pi pi-search"></i>
+                    <input type="search" pInputText placeholder="Search by Name" (input)="dv.filter(getEventValue($event))">
+                </span>
+                <button pButton type="button" label="Create new model" (click)="showCreateDialog()"></button>
+            </div>
+        </ng-template>
+        <ng-template let-model pTemplate="gridItem">
+            <div class="col-12 md:col-4">
+                <div class="model-grid-item card">
+                    <div class="model-grid-item-top">
+                        <p>Status: <p-tag value="Activated" *ngIf="model.active" severity="success"></p-tag><p-tag value="Deactivated" *ngIf="!model.active" severity="danger"></p-tag></p>
+                    </div>
+                    <div class="model-grid-item-content">
+                        <p>Id: {{model.id}}</p>
+                        <p>Name: {{model.name}}</p>
+                    </div>
+                    <div class="model-grid-item-bottom">
+                        <button pButton *ngIf="!model.active" type="button" class="p-button-success" (click)="activateModel(model)">Activate</button>
+                        <button pButton *ngIf="!model.active" type="button" [style]="{'margin-left': '0.5em'}" class="p-button-danger" (click)="deleteModel(model)">Delete</button>
+                        <button pButton *ngIf="model.active" type="button" class="p-button-danger" (click)="deactivateModel(model)">Dectivate</button>
+                    </div>
+                </div>
+            </div>
+        </ng-template>
+    </p-dataView>
 </div>
-
-<ul class="models">
-    <li *ngFor="let model of models">
-        {{model.id}}<br>
-        {{model.name}}<br>
-        <button *ngIf="!model.active" type="button" (click)="activateModel(model)">Activate</button>
-        <button *ngIf="model.active" type="button" (click)="deactivateModel(model)">Dectivate</button><br>
-        <button *ngIf="!model.active" type="button" (click)="deleteModel(model)">Delete</button>
-        <div *ngIf="model.active" style="background-color: green;"><span style="padding-left: 1em; padding-right: 1em;"></span></div>
-    </li>
-</ul>

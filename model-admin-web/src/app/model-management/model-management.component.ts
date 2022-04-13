@@ -12,16 +12,22 @@ import { ModelOrchestrationService } from '../model-orchestration.service';
 })
 export class ModelManagementComponent implements OnInit {
 
+  modelName = '';
   fileName = '';
-  models: Array<Model>;
+  models: Model[];
+  display = false;
 
   constructor(private http: HttpClient, private modelStorageService: ModelStorageService,
     private modelOrchestrationService: ModelOrchestrationService) {
-    this.models = [];
+      this.models = [];
   }
 
   ngOnInit(): void {
     this.updateModelList();
+  }
+
+  upload() {
+
   }
 
   onFileSelected(event: Event) {
@@ -71,5 +77,13 @@ export class ModelManagementComponent implements OnInit {
     this.modelOrchestrationService.listModels().subscribe((data: any) => {
       this.models = data.models;
     });
+  }
+
+  getEventValue($event:any) :string {
+    return $event.target.value;
+  }
+
+  showCreateDialog() {
+    this.display = true;
   }
 }
