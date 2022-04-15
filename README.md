@@ -40,11 +40,11 @@ helm install apisix apisix/apisix  --namespace default `
 ## SSO server
 ### Build docker
 ```pwsh
-docker build .\sso-server -t sso-server:1.0 --no-cache
+docker build .\sso-server -t sso-server:1.0
 ```
 ### Build image for post install hook
 ```pwsh
-docker build .\sso-server\realm-setup -t sso-server-post-install:1.0 --no-cache
+docker build .\sso-server\realm-setup -t sso-server-post-install:1.0
 ```
 ### Generate self signed cert
 Reference: https://wiki.openssl.org/index.php/Binaries
