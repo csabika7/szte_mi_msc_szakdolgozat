@@ -13,6 +13,7 @@ import { TagModule } from 'primeng/tag';
 import {DataViewModule} from 'primeng/dataview';
 import {DialogModule} from 'primeng/dialog';
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
+import {ProgressBarModule} from 'primeng/progressbar';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { NoopAnimationsModule } from "@angular/platform-browser/animations";
     TagModule,
     DataViewModule,
     DialogModule,
-    NoopAnimationsModule
+    NoopAnimationsModule,
+    ProgressBarModule
   ],
   providers: [],
   bootstrap: [AppComponent]

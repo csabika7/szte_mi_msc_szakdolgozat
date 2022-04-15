@@ -1,14 +1,15 @@
-<p-dialog header="Create new model" [(visible)]="display" [breakpoints]="{'960px': '75vw', '640px': '100vw'}" [style]="{width: '50vw'}" [modal]="true">
+<p-dialog header="Create new model" [(visible)]="displayDialog" [breakpoints]="{'960px': '75vw', '640px': '100vw'}" [style]="{width: '50vw'}" [modal]="true">
     <ng-template pTemplate="content" >
-        <span class="p-float-label">
+        <span class="p-float-label" style="margin-bottom: 0.5rem; margin-top: 2rem;">
             <input id="model-name-input" type="text" pInputText  [(ngModel)]="modelName" />
             <label for="model-name-input">Model name</label>
         </span>
-        <p-fileUpload name="myfile[]" url="./upload.php"></p-fileUpload>
-    </ng-template>
-
-    <ng-template pTemplate="footer" >
-        <button pButton type="button" label="Upload and create" (click)="upload()"></button>
+        <p-fileUpload #fp name="model_file" url="/v1/model-store/model" mode="basic" [auto]="false" chooseLabel="Choose model file" (onBeforeUpload)="onBeforeUpload($event)"(onProgress)="onProgress($event)">
+        </p-fileUpload>
+        <div style="text-align: right; margin-top: 1rem; margin-bottom: 1rem;">
+            <button pButton type="button" label="Upload and create" (click)="fp.upload()"></button>
+        </div>
+        <p-progressBar [value]="uploadProgress"></p-progressBar>
     </ng-template>
 </p-dialog>
 

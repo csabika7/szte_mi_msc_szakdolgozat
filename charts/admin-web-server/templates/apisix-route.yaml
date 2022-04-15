@@ -12,6 +12,7 @@ spec:
           - "/"
           - "/runtime*"
           - "/polyfills*"
+          - "/primeicons*"
           - "/main*"
           - "/styles*"
           - "/redirect_uri"

@@ -13,9 +13,10 @@ import { ModelOrchestrationService } from '../model-orchestration.service';
 export class ModelManagementComponent implements OnInit {
 
   modelName = '';
+  uploadProgress = 0;
   fileName = '';
   models: Model[];
-  display = false;
+  displayDialog = false;
 
   constructor(private http: HttpClient, private modelStorageService: ModelStorageService,
     private modelOrchestrationService: ModelOrchestrationService) {
@@ -26,39 +27,23 @@ export class ModelManagementComponent implements OnInit {
     this.updateModelList();
   }
 
-  upload() {
-
+  onBeforeUpload(event: any) {
+    event.formData.append("name", this.modelName);
   }
 
-  onFileSelected(event: Event) {
-    const target = event.target as HTMLInputElement;
-    const files = target.files as FileList;
-    const file = files[0]
-
-    if (file) {
-        this.fileName = file.name;
-        const formData = new FormData();
-        formData.append("name", "random");
-        formData.append("model_file", file);
-        const upload$ = this.http.post("/v1/model-store/model", formData);
-        upload$.subscribe();
+  onProgress(event: any) {
+    this.uploadProgress = event.progress;
+    if(this.uploadProgress >= 100) {
+      this.displayDialog = false;
+      // workaround unUpload does not work
+      this.updateModelList();
     }
   }
 
   deleteModel(selectedModel: Model) {
     this.modelStorageService.deleteModel(selectedModel.id).subscribe((data: any) => {
-      let delIdx = -1;
-      for(let i = 0; i < this.models.length; i++) {
-        let model = this.models[i];
-        if (model.id === selectedModel.id) {
-          delIdx = i;
-          break;
-        }
-      }
-      if (delIdx >= 0) {
-        this.models.splice(delIdx);
-      }
-    })
+      this.models = this.models.filter(model => model.id != selectedModel.id)
+    });
   }
 
   activateModel(selectedModel: Model) {
@@ -84,6 +69,8 @@ export class ModelManagementComponent implements OnInit {
   }
 
   showCreateDialog() {
-    this.display = true;
+    this.displayDialog = true;
+    this.modelName = "";
+    this.uploadProgress = 0;
   }
 }
