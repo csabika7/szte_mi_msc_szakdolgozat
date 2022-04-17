@@ -25,5 +25,5 @@ COPY --from=builder /${PROJECT_NAME}/dist/*.whl /tmp
 RUN pip install /tmp/*.whl
 RUN rm /tmp/*
 
-ENTRYPOINT uwsgi -s /tmp/uwsgi_service.sock --master --http 0.0.0.0:80 --manage-script-name --mount /$PROJECT_NAME=$MODULE_NAME.uwsgi:app --chmod-socket=666 --limit-post=1073741824 --log-master
+ENTRYPOINT uwsgi -s /tmp/uwsgi_service.sock --master --http 0.0.0.0:80 --manage-script-name --mount /$PROJECT_NAME=$MODULE_NAME.uwsgi:app --chmod-socket=666 --limit-post=1073741824 --buffer-size=65535
 CMD [""]

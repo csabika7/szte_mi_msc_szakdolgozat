@@ -12,6 +12,8 @@ spec:
           - "/auth*"
           - "/realms*"
           - "/resource*"
+          - "/admin*"
+          - "/js*"
       backends:
         - serviceName: sso-server-service
           servicePort: 80

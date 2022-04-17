@@ -4,12 +4,11 @@ sso:
   username: admin
   password: admin
   realm: weed_rec_admin_realm
-  identity_provider:
-    client_id: 416118485535-t8hvc35esu9l4853pdmieao35af3o536.apps.googleusercontent.com
-    client_secret: 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
   ingress_client:
     client_id: model-administration
     client_secret: wnaKjc2zmgEV9PvBTkbnsr1jsFrWg0Qf
+  public_client:
+    client_id: rest-model-administration
 
 db:
   port: 5432

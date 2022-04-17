@@ -39,10 +39,6 @@ spec:
             value: {{ .Values.redis.port | quote}}
           - name: REDIS_CHANNEL
             value: {{ .Values.redis.channel }}
-          - name: MODEL_PREDICTION_AGGREGATOR_HOST
-            value: {{ .Values.model.prediction.aggregator.host }}
-          - name: MODEL_PREDICTION_AGGREGATOR_PORT
-            value: {{ .Values.model.prediction.aggregator.port | quote }}
           - name: ACTIVATED_MODEL_DB_SOCKET
             value: /var/run/redis/redis.socket
           - name: ACTIVATED_MODEL_KEY

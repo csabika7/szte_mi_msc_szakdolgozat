@@ -4,12 +4,46 @@ metadata:
   name: model-orchestrator-route
 spec:
   http:
-    - name: prediction
+    - name: browser-path
       match:
         hosts:
-        - localhost
+          - localhost
         paths:
           - /v1/model-orchestrator/*
       backends:
         - serviceName: model-orchestrator-service
           servicePort: 80
+      plugins:
+        - name: openid-connect
+          enable: true
+          config:
+            client_id: {{ .Values.sso.client_id }}
+            client_secret: {{ .Values.sso.client_secret }}
+            discovery: {{ .Values.sso.discovery_url }}
+            realm: {{ .Values.sso.realm }}
+            bearer_only: false
+            redirect_uri: /redirect_uri
+    - name: rest-path
+      match:
+        hosts:
+          - localhost
+        paths:
+          - /rest/v1/model-orchestrator/*
+      backends:
+        - serviceName: model-orchestrator-service
+          servicePort: 80
+      plugins:
+        - name: openid-connect
+          enable: true
+          config:
+            client_id: {{ .Values.sso.client_id }}
+            client_secret: {{ .Values.sso.client_secret }}
+            realm: {{ .Values.sso.realm }}
+            discovery: {{ .Values.sso.discovery_url }}
+            bearer_only: true
+        - name: proxy-rewrite
+          enable: true
+          config:
+            regex_uri:
+              - ^/rest/(.*)
+              - /$1

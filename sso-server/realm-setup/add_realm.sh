@@ -15,16 +15,16 @@ curl $KEYCLOAK_PROTO://$KEYCLOAK_HOST/admin/realms --insecure \
      --header "Authorization: Bearer  $access_token" \
      --data "{\"realm\":\"$KEYCLOAK_REALM\",\"enabled\":true}"
 
-# Create Identity Provider
-identity_provider_config=$(cat /realm_data/identity_provider_config.json | tr -d "\n" | tr -d " ")
-curl $KEYCLOAK_PROTO://$KEYCLOAK_HOST/admin/realms/$KEYCLOAK_REALM/identity-provider/instances \
+# Create client for model administration for web access
+ingress_client_config=$(cat /realm_data/ingress_client_config.json | tr -d "\n" | tr -d " ")
+curl $KEYCLOAK_PROTO://$KEYCLOAK_HOST/admin/realms/$KEYCLOAK_REALM/clients \
      --insecure --request POST \
      --header "Content-Type: application/json" \
      --header "Authorization: Bearer  $access_token" \
-     --data $identity_provider_config
+     --data $ingress_client_config
 
-# Create client for model administration
-ingress_client_config=$(cat /realm_data/ingress_client_config.json | tr -d "\n" | tr -d " ")
+# Create client for model administration for rest client access
+ingress_client_config=$(cat /realm_data/public_client_config.json | tr -d "\n" | tr -d " ")
 curl $KEYCLOAK_PROTO://$KEYCLOAK_HOST/admin/realms/$KEYCLOAK_REALM/clients \
      --insecure --request POST \
      --header "Content-Type: application/json" \

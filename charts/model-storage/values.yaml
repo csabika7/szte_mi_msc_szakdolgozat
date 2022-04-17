@@ -1,8 +1,3 @@
-redis:
-  host: message-broker-redis-master
-  port: 6379
-  channel: model_activation
-
 sso:
   client_id: model-administration
   client_secret: wnaKjc2zmgEV9PvBTkbnsr1jsFrWg0Qf
