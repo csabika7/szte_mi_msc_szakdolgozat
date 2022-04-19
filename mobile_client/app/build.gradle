@@ -40,6 +40,7 @@ dependencies {
     implementation "androidx.camera:camera-view:${camerax_version}"
     implementation "androidx.camera:camera-extensions:${camerax_version}"
     implementation "com.squareup.okhttp3:okhttp:4.9.3"
+    implementation "androidx.coordinatorlayout:coordinatorlayout:1.2.0"
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'

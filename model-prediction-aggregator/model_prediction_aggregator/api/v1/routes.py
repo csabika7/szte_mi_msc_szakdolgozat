@@ -24,9 +24,10 @@ def predicate():
         client = ModelPredictionClient(service_url)
         data, status = client.predict(raw_img, filename, "image/png")
         prediction = float(data.decode('utf-8'))
-        if status != 200:
+        if status == 200:
+            if response["certainty"] < prediction and 0.5 < prediction:
+                response["name"] = model_name
+                response["certainty"] = prediction
+        else:
             current_app.logger.error("{} model has returned response with status {}.".format(model_name, status))
-        if response["certainty"] < prediction:
-            response["name"] = model_name
-            response["certainty"] = prediction
     return response, 200

@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Weed recognition</string>
+    <string name="evaluate">Take a picture &amp; evaluate</string>
 </resources>
