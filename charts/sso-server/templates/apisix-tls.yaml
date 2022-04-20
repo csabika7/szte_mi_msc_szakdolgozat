@@ -4,7 +4,7 @@ metadata:
   name: tls
 spec:
   hosts:
-    - localhost
+    - weedrecognition.com
   secret:
     name: certificates
     namespace: default

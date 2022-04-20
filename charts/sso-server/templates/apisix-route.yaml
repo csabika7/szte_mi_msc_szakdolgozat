@@ -7,13 +7,13 @@ spec:
     - name: authentication
       match:
         hosts:
-          - "localhost"
+          - weedrecognition.com
         paths:
-          - "/auth*"
-          - "/realms*"
-          - "/resource*"
-          - "/admin*"
-          - "/js*"
+          - /auth*
+          - /realms*
+          - /resource*
+          - /admin*
+          - /js*
       backends:
         - serviceName: sso-server-service
           servicePort: 80

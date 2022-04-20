@@ -1,0 +1,5 @@
+zone "weedrecognition.com." {
+        type master;
+        file "/etc/bind/db.weedrecognition.com";
+        notify explicit;
+};

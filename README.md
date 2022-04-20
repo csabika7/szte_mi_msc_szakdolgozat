@@ -109,3 +109,33 @@ helm package .\charts\admin-web-server\
 ```pwsh
 helm install admin-web-server .\admin-web-server-1.0.0.tgz
 ```
+# Local System Test
+## Setup DNS server
+We will need to start up custom DNS Server to be able to serve ```weedrecognition.com```.
+
+NOTE: Replace the IP address to your local machine address in the ```/system_test/dns/db.weedrecognition.com```.
+```pwsh
+docker run `
+        --name=bind9 `
+        --restart=always `
+        --publish 53:53/udp `
+        --publish 53:53/tcp `
+        --publish 127.0.0.1:953:953/tcp `
+        --volume ${PWD}/system_test/dns/named.conf.local:/etc/bind/named.conf.local `
+        --volume ${PWD}/system_test/dns/db.weedrecognition.com:/etc/bind/db.weedrecognition.com `
+        internetsystemsconsortium/bind9:9.18
+```
+## Change DNS server on your machine
+To change your DNS server on a Windows 10 computer, go to Settings > Network & Internet >
+Change Adapter Settings. Then right-click a connection and select Properties > IPv4 > Properties.
+Finally,select Use the following DNS server address.
+## Change DNS server on your android device
+Install the following app:
+https://play.google.com/store/apps/details?id=com.appplanex.dnschanger
+
+Add a Custom DNS Server with IP address of your local machine.
+## Run tests
+Steps:
+* Install android application to your phone.
+* Connect your mobile phone to the same network as your local machine
+* Use the app :)

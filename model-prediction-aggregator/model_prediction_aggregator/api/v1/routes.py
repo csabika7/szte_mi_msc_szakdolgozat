@@ -19,12 +19,12 @@ def predicate():
     current_app.logger.info("Active models: {}", str(activated_models))
     raw_img = file.read()
     filename = file.filename
-    response = {"name": None, "certainty": 0.0}
+    response = {"name": "", "certainty": 0.0}
     for model_name, service_url in activated_models.items():
         client = ModelPredictionClient(service_url)
         data, status = client.predict(raw_img, filename, "image/png")
-        prediction = float(data.decode('utf-8'))
         if status == 200:
+            prediction = float(data.decode('utf-8'))
             if response["certainty"] < prediction and 0.5 < prediction:
                 response["name"] = model_name
                 response["certainty"] = prediction

@@ -7,15 +7,15 @@ spec:
     - name: admin-web-server-http
       match:
         hosts:
-          - "localhost"
+          - weedrecognition.com
         paths:
-          - "/"
-          - "/runtime*"
-          - "/polyfills*"
-          - "/primeicons*"
-          - "/main*"
-          - "/styles*"
-          - "/redirect_uri"
+          - /
+          - /runtime*
+          - /polyfills*
+          - /primeicons*
+          - /main*
+          - /styles*
+          - /redirect_uri
       backends:
         - serviceName: admin-web-server-service
           servicePort: 80

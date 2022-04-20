@@ -4,10 +4,10 @@ metadata:
   name: model-prediction-aggregator-route
 spec:
   http:
-    - name: browser-path
+    - name: path
       match:
         hosts:
-        - localhost
+        - weedrecognition.com
         paths:
           - /v1/model/predict
       backends:

@@ -7,7 +7,7 @@ spec:
     - name: browser-path
       match:
         hosts:
-          - localhost
+          - weedrecognition.com
         paths:
           - /v1/model-orchestrator/*
       backends:
@@ -26,7 +26,7 @@ spec:
     - name: rest-path
       match:
         hosts:
-          - localhost
+          - weedrecognition.com
         paths:
           - /rest/v1/model-orchestrator/*
       backends:

@@ -5,6 +5,7 @@ import android.util.Log;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
+import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
@@ -20,7 +21,7 @@ public final class ImagePredictionFactory {
     public static ImagePredictionClient create() {
         try {
             // TODO configurable address
-            return new ImagePredictionClient(createHttpClient(), "https", "192.168.1.101", "31152");
+            return new ImagePredictionClient(createHttpClient(), "https", "weedrecognition.com", "31152");
         } catch (NoSuchAlgorithmException | KeyManagementException ex) {
             Log.e(ImagePredictionFactory.class.getName(), "Unable to create http client", ex);
             return null;
@@ -39,6 +40,9 @@ public final class ImagePredictionFactory {
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         builder.sslSocketFactory(sslSocketFactory, trustAllCerts);
         builder.hostnameVerifier((hostname, session) -> true);
+        builder.readTimeout(120, TimeUnit.SECONDS);
+        builder.writeTimeout(120, TimeUnit.SECONDS);
+        builder.connectTimeout(120, TimeUnit.SECONDS);
 
         return builder.build();
     }
