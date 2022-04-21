@@ -1,14 +1,17 @@
 <p-toast></p-toast>
-<p-dialog header="Create new model" [(visible)]="displayDialog" [breakpoints]="{'960px': '75vw', '640px': '100vw'}" [style]="{width: '50vw'}" [modal]="true">
+<p-dialog #dialog header="Create new model" [(visible)]="displayDialog" [breakpoints]="{'960px': '75vw', '640px': '100vw'}" [style]="{width: '50vw'}" [modal]="true">
     <ng-template pTemplate="content" >
         <span class="p-float-label" style="margin-bottom: 0.5rem; margin-top: 2rem;">
             <input id="model-name-input" type="text" pInputText  [(ngModel)]="modelName" />
-            <label for="model-name-input">Model name</label>
+            <label for="model-name-input">Name of weed</label>
+            <small *ngIf="showNameError" id="model-name-help" style="display: none;" class="p-error block">Name of the weed is required.</small>
         </span>
-        <p-fileUpload #fp name="model_file" url="/v1/model-store/model" mode="basic" [auto]="false" chooseLabel="Choose model file" (onBeforeUpload)="onBeforeUpload($event)"(onProgress)="onProgress($event)">
+        <p-fileUpload #fp id="model_file" name="model_file" required url="/v1/model-store/model" mode="basic" [auto]="false" chooseLabel="Choose model file"
+            (onBeforeUpload)="onBeforeUpload($event)" (onProgress)="onProgress($event)" >
         </p-fileUpload>
+        <small *ngIf="showFileError" id="model-name-help" style="display: none;" class="p-error block">Model file is required.</small>
         <div style="text-align: right; margin-top: 1rem; margin-bottom: 1rem;">
-            <button pButton type="button" label="Upload and create" (click)="fp.upload()"></button>
+            <button pButton type="button" label="Upload and create" (click)="upload($event)"></button>
         </div>
         <p-progressBar [value]="uploadProgress"></p-progressBar>
     </ng-template>

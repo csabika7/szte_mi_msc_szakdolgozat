@@ -127,7 +127,7 @@ docker run `
 ```
 ## Adding DNS entry to hosts file
 In order to be able to use the admin page on your local host you will need to add
-```<your host address> weedrecognition.com``` to hosts file: ```c:\windows\system32\drivers\etc\hosts```.
+```<your host address> weedrecognition.com``` to the hosts file: ```c:\windows\system32\drivers\etc\hosts```.
 
 ## Change DNS server on your android device
 Install the following app:

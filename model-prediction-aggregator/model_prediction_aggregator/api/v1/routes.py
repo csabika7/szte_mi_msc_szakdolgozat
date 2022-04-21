@@ -20,7 +20,7 @@ def predicate():
     if file.filename == "":
         return "Image file name is empty.", 400
     if file.mimetype != "image/png":
-        return "Image must be PNG."
+        return "Image must be PNG.", 400
     activated_models_repo = ActivatedModelsRepositoryClient(current_app.config.get("ACTIVATED_MODEL_DB_SOCKET"),
                                                             current_app.config.get("ACTIVATED_MODEL_KEY"))
     activated_models = activated_models_repo.get_activated_models()
