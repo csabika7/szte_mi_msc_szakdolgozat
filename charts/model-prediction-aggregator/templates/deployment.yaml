@@ -25,9 +25,13 @@ spec:
             value: /var/run/redis/redis.socket
           - name: ACTIVATED_MODEL_KEY
             value: activated_models
+          - name: ARCHIVE_DIR
+            value: /data
         volumeMounts:
           - mountPath: /var/run/redis
             name: redis-socket
+          - mountPath: /data
+            name: image-archive
       - name: model-activation-listener
         image: model-activation-listener:1.0
         env:
@@ -59,6 +63,8 @@ spec:
           - --unixsocket /var/run/redis/redis.socket
       volumes:
       - name: activated-model-data-volume
+        emptyDir: {}
+      - name: image-archive
         emptyDir: {}
       - name: redis-socket
         emptyDir: {}
