@@ -8,6 +8,17 @@
     android:background="@color/black"
     tools:context=".MainActivity">
 
+    <ImageView
+        android:id="@+id/capturedImage"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.253"
+        app:srcCompat="?attr/selectableItemBackground" />
+
     <androidx.camera.view.PreviewView
         android:id="@+id/previewView"
         android:layout_width="match_parent"
@@ -16,8 +27,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.253"
-        tools:layout_editor_absoluteX="45dp" >
+        app:layout_constraintVertical_bias="0.253" >
     </androidx.camera.view.PreviewView>
 
     <ProgressBar
@@ -42,11 +52,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="takePicture"
+        android:text="@string/evaluate"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/previewView"
-        tools:text="@string/evaluate" />
+        app:layout_constraintTop_toBottomOf="@+id/previewView" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
