@@ -1,5 +1,6 @@
 import json
 from model_activation_listener.kubernetes_api import ModelPredictionServerEndpointHandler
+from model_activation_listener.dtos import ActivationEvent
 import time
 import redis
 import kubernetes
@@ -39,7 +40,6 @@ ACTIVATED_MODEL_KEY = os.environ["ACTIVATED_MODEL_KEY"]
 mps_url_handler = ModelPredictionServerEndpointHandler(kube_config=configuration,
                                                        namespace=NAMESPACE,
                                                        label_selector=LABEL_SELECTOR,
-                                                       prediction_path="/v1/model/predict",
                                                        model_name_annotation_key="model_name")
 
 print("Connecting to message queue redis {}:{}".format(REDIS_HOST, REDIS_PORT))
@@ -50,9 +50,9 @@ kv_redis_client = redis.Redis(unix_socket_path=ACTIVATED_MODEL_DB_SOCKET)
 print("Connected.")
 
 print("Initialize DB at startup.")
-urls = mps_url_handler.list_model_prediction_server_urls()
-print("Currently active models: {}".format(urls))
-kv_redis_client.set(ACTIVATED_MODEL_KEY, json.dumps(urls))
+active_model_list = mps_url_handler.get_active_model_list()
+print("Currently active models: {}".format(active_model_list))
+kv_redis_client.set(ACTIVATED_MODEL_KEY, json.dumps(active_model_list.to_dict()))
 
 print("Subscribing to channel {}".format(REDIS_CHANNEL))
 queue = mq_redis_client.pubsub(ignore_subscribe_messages=True)
@@ -63,16 +63,16 @@ last_update_time = time.time()
 while True:
     message = queue.get_message()
     if message:
-        activation_event = json.loads(message["data"])
-        print("Model activation event received: model_id: {}, state: {}".format(activation_event["model_id"],
-                                                                                activation_event["state"]))
-        urls = mps_url_handler.list_model_prediction_server_urls()
-        kv_redis_client.set(ACTIVATED_MODEL_KEY, json.dumps(urls))
-        print("Active model prediction server saved for key {}: {}".format(ACTIVATED_MODEL_KEY, urls))
+        activation_event = json.loads(message["data"], object_hook=lambda d: ActivationEvent(**d))
+        print("Model activation event received: model_id: {}, state: {}".format(activation_event.model_id,
+                                                                                activation_event.state))
+        active_model_list = mps_url_handler.get_active_model_list()
+        kv_redis_client.set(ACTIVATED_MODEL_KEY, json.dumps(active_model_list.to_dict()))
+        print("Active model prediction server saved for key {}: {}".format(ACTIVATED_MODEL_KEY, active_model_list))
         last_update_time = time.time()
     elif last_update_time - time.time() > 60:
         print("No model activation event has been received for a minute. Update model list.")
-        urls = mps_url_handler.list_model_prediction_server_urls()
-        kv_redis_client.set(ACTIVATED_MODEL_KEY, json.dumps(urls))
+        active_model_list = mps_url_handler.get_active_model_list()
+        kv_redis_client.set(ACTIVATED_MODEL_KEY, json.dumps(active_model_list.to_dict()))
         last_update_time = time.time()
     time.sleep(0.001)

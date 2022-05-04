@@ -1,5 +1,6 @@
 import redis
 import json
+from model_prediction_aggregator.dtos import ActiveModel
 
 
 class ActivatedModelsRepositoryClient:
@@ -11,4 +12,4 @@ class ActivatedModelsRepositoryClient:
     def get_activated_models(self):
         with redis.Redis(unix_socket_path=self.unix_socket) as r:
             value = r.get(self.key)
-            return json.loads(value)
+            return [ActiveModel(**item) for item in json.loads(value)["models"]]

@@ -1,12 +1,14 @@
+import keras
 import tensorflow as tf
 
 
 class Model:
 
-    def __init__(self, model_file_path):
+    def __init__(self, model_file_path: str):
         self.model = tf.keras.models.load_model(model_file_path)
 
-    def predict(self, img_input):
+    def predict(self, img_input: tf.Tensor):
+        keras.Model
         return self.model.predict(img_input)
 
 

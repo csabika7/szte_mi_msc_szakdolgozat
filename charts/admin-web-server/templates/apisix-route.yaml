@@ -16,6 +16,7 @@ spec:
           - /main*
           - /styles*
           - /redirect_uri
+          - /status
       backends:
         - serviceName: admin-web-server-service
           servicePort: 80
@@ -32,5 +33,5 @@ spec:
         - name: proxy-rewrite
           enable: true
           config:
-            host: localhost
+            host: weedrecognition.com
             scheme: http

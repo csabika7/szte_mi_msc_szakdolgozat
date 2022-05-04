@@ -27,6 +27,15 @@ export class ModelOrchestrationService {
     return this.httpClient.post(`/v1/model-orchestrator/model/deactivate/${modelId}`, httpOptions);
   }
 
+  deleteModel(modelId: string) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type':  'application/json'
+      })
+    };
+    return this.httpClient.delete(`/v1/model-orchestrator/model/${modelId}`, httpOptions);
+  }
+
   listModels() {
     const httpOptions = {
       headers: new HttpHeaders({

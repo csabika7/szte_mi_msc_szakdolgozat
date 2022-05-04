@@ -1,11 +1,9 @@
-import { Component, OnInit, QueryList, ViewChild, ViewChildren, AfterViewInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Component, OnInit, OnDestroy, QueryList, ViewChildren, AfterViewInit } from '@angular/core';
 import { Model } from './model';
-import { ModelStorageService } from '../model-storage.service';
 import { ModelOrchestrationService } from '../model-orchestration.service';
+import { HttpClient } from '@angular/common/http';
 import { MessageService } from 'primeng/api';
 import { FileUpload } from 'primeng/fileupload';
-
 
 @Component({
   selector: 'app-model-management',
@@ -13,12 +11,10 @@ import { FileUpload } from 'primeng/fileupload';
   styleUrls: ['./model-management.component.css'],
   providers: [MessageService]
 })
-export class ModelManagementComponent implements OnInit, AfterViewInit {
+export class ModelManagementComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @ViewChildren("fp") fileUploadQuery: QueryList<FileUpload>;
-
   fileUpload: FileUpload;
-
   modelName = '';
   uploadProgress = 0;
   fileName = '';
@@ -26,14 +22,25 @@ export class ModelManagementComponent implements OnInit, AfterViewInit {
   displayDialog = false;
   showNameError = false;
   showFileError = false;
+  showfileFormatError = false;
+  updateAccessTokenJobId: any;
 
-  constructor(private http: HttpClient, private modelStorageService: ModelStorageService,
-    private modelOrchestrationService: ModelOrchestrationService, private msgService: MessageService) {
+  constructor(private modelOrchestrationService: ModelOrchestrationService, private msgService: MessageService, private httpClient: HttpClient) {
       this.models = [];
   }
 
   ngOnInit(): void {
     this.updateModelList();
+    this.updateAccessTokenJobId = setInterval(() => {
+      this.httpClient.get("/status").subscribe((data: any) => {
+        // Keeping access token up to date
+        console.log("Getting backend status.");
+      });
+    }, 50000);
+  }
+
+  ngOnDestroy(): void {
+    clearInterval(this.updateAccessTokenJobId);
   }
 
   ngAfterViewInit(): void {
@@ -41,8 +48,7 @@ export class ModelManagementComponent implements OnInit, AfterViewInit {
       if(fileUploads.first) {
         this.fileUpload = fileUploads.first;
         this.fileUpload.onError.subscribe((data: any) => {
-          this.updateModelList();
-          this.msgService.add({severity: "error", summary: `Failed to upload model.`, detail: ""});
+          this.msgService.add({severity: "error", summary: `Failed to upload model.`, detail: data.error.error});
         });
         this.fileUpload.onUpload.subscribe((data: any) => {
           this.updateModelList();
@@ -52,9 +58,10 @@ export class ModelManagementComponent implements OnInit, AfterViewInit {
     });
   }
 
-  upload(event: any) {
+  upload(event: any): void {
     this.showNameError = false;
     this.showFileError = false;
+    this.showfileFormatError = false;
     if(this.modelName === '') {
       this.showNameError = true;
       return;
@@ -63,33 +70,35 @@ export class ModelManagementComponent implements OnInit, AfterViewInit {
       this.showFileError = true;
       return;
     }
+    if(!this.fileUpload.files[0].name.endsWith(".hdf5")) {
+      this.showfileFormatError = true;
+      this.fileUpload.clear();
+      return;
+    }
     this.fileUpload.upload();
   }
 
-  onBeforeUpload(event: any) {
+  onBeforeUpload(event: any): void {
     event.formData.append("name", this.modelName);
   }
 
-  onProgress(event: any) {
+  onProgress(event: any): void {
     this.uploadProgress = event.progress;
     if(this.uploadProgress >= 100) {
       this.displayDialog = false;
     }
   }
 
-  onError(event: any) {
-    console.log("on error");
-  }
-
-  deleteModel(selectedModel: Model) {
-    this.modelStorageService.deleteModel(selectedModel.id).subscribe(
+  deleteModel(selectedModel: Model): void {
+    this.modelOrchestrationService.deleteModel(selectedModel.id).subscribe(
       (data: any) => {
         this.models = this.models.filter(model => model.id != selectedModel.id)
         this.msgService.add({severity: "success", summary: `${selectedModel.id} has been deleted.`, detail: ""});
       },
-      (error) => {
-        console.log(error);
-        this.msgService.add({severity: "error", summary: `Unable to delete model.`, detail: ""});
+      (data) => {
+        console.log(data);
+        let details = data.status < 500 ? data.error : "";
+        this.msgService.add({severity: "error", summary: `Unable to delete model.`, detail: details});
       },
       () => {
         console.log("Completed");
@@ -97,49 +106,52 @@ export class ModelManagementComponent implements OnInit, AfterViewInit {
     );
   }
 
-  activateModel(selectedModel: Model) {
+  activateModel(selectedModel: Model): void {
     this.modelOrchestrationService.activateModel(selectedModel.id).subscribe((data: any) => {
       selectedModel.active = true;
       this.msgService.add({severity: "success", summary: `${selectedModel.id} has been activated.`, detail: ""});
     },
-    (error) => {
-      console.log(error);
-      this.msgService.add({severity: "error", summary: `Unable to activate model.`, detail: ""});
+    (data) => {
+      console.log(data);
+      let details = data.status < 500 ? data.error : "";
+      this.msgService.add({severity: "error", summary: `Unable to activate model.`, detail: details});
     },
     () => {
       console.log("Completed");
     });
   }
 
-  deactivateModel(selectedModel: Model) {
+  deactivateModel(selectedModel: Model): void {
     this.modelOrchestrationService.deactivateModel(selectedModel.id).subscribe((data: any) => {
       selectedModel.active = false;
       this.msgService.add({severity: "success", summary: `${selectedModel.id} has been deactivated.`, detail: ""});
     },
-    (error) => {
-      console.log(error);
-      this.msgService.add({severity: "error", summary: `Unable to deactivate model.`, detail: ""});
+    (data) => {
+      console.log(data);
+      let details = data.status < 500 ? data.error : "";
+      this.msgService.add({severity: "error", summary: `Unable to deactivate model.`, detail: details});
     },
     () => {
       console.log("Completed");
     });
   }
 
-  updateModelList() {
+  updateModelList(): void {
     this.modelOrchestrationService.listModels().subscribe((data: any) => {
       this.models = data.models;
     });
   }
 
-  getEventValue($event:any) :string {
-    return $event.target.value;
-  }
-
   showCreateDialog() {
     this.showNameError = false;
     this.showFileError = false;
-    this.displayDialog = true;
+    this.showfileFormatError = false;
     this.modelName = "";
     this.uploadProgress = 0;
+    this.displayDialog = true;
+  }
+
+  getEventValue($event:any) :string {
+    return $event.target.value;
   }
 }

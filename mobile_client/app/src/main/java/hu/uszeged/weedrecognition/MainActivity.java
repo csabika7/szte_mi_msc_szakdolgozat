@@ -30,13 +30,12 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.common.util.concurrent.ListenableFuture;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import hu.uszeged.weedrecognition.image.predict.ImagePredictionClient;
-import hu.uszeged.weedrecognition.image.predict.ImagePredictionFactory;
+import hu.uszeged.weedrecognition.image.predict.ImagePredictionClientFactory;
 
 
 public class MainActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
@@ -46,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
     private Camera camera;
     private ListenableFuture<ProcessCameraProvider> cameraProviderFuture;
-    private ExecutorService cameraExecutor;
+    private ExecutorService executor;
     private ProgressBar progressBar;
     private ImageView imageView;
     private PreviewView previewView;
@@ -54,12 +53,12 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
     private Button takeImageButton;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void onCreate(Bundle state) {
+        super.onCreate(state);
         setContentView(R.layout.activity_main);
-        progressBar = findViewById(R.id.progressBar);
         imageView = findViewById(R.id.capturedImage);
         previewView = findViewById(R.id.previewView);
+        progressBar = findViewById(R.id.progressBar);
         messageContainer = findViewById(R.id.messageContainer);
         takeImageButton = findViewById(R.id.takePictureButton);
 
@@ -67,24 +66,24 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         imageView.setVisibility(View.GONE);
         imageView.bringToFront();
 
-        if(isAllPermissionToCameraGranted()) {
+        if(isAllPermissionToGranted()) {
             startCamera();
         } else {
             requestPermissions(REQUIRED_PERMISSIONS, CAMERA_GRANT_SUCCESS_CODE);
         }
-        cameraExecutor = Executors.newSingleThreadExecutor();
+        executor = Executors.newSingleThreadExecutor();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        cameraExecutor.shutdown();
+        executor.shutdown();
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(isAllPermissionToCameraGranted()) {
+    public void onRequestPermissionsResult(int code, @NonNull String[] permissions, @NonNull int[] grantRes) {
+        super.onRequestPermissionsResult(code, permissions, grantRes);
+        if(isAllPermissionToGranted()) {
             startCamera();
         }
     }
@@ -93,15 +92,19 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         takeImageButton.setAlpha(.5f);
         takeImageButton.setClickable(false);
         Bitmap bitmap = previewView.getBitmap();
+        if(bitmap == null) {
+            showErrorMessage("Unable to take picture.");
+            return;
+        }
         Log.i(MainActivity.class.getName(), "w: " + bitmap.getWidth() + ", h: " + bitmap.getHeight());
         imageView.setImageBitmap(bitmap);
         imageView.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.VISIBLE);
-        cameraExecutor.submit(() -> {
+        executor.submit(() -> {
             try {
                 ByteArrayOutputStream pngImg = new ByteArrayOutputStream();
                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, pngImg);
-                ImagePredictionClient client = ImagePredictionFactory.create();
+                ImagePredictionClient client = ImagePredictionClientFactory.create();
                 String result = client.predict(pngImg.toByteArray());
                 if(result == null || "".equals(result)) {
                     showErrorMessage("Unknown");
@@ -115,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         });
     }
 
-    boolean isAllPermissionToCameraGranted() {
+    boolean isAllPermissionToGranted() {
         for (String permission : REQUIRED_PERMISSIONS) {
             if(ContextCompat.checkSelfPermission(this, permission)
                     == PackageManager.PERMISSION_DENIED) {

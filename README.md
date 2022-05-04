@@ -48,6 +48,8 @@ docker build .\sso-server\realm-setup -t sso-server-post-install:1.0
 ```
 ### Generate self signed cert
 Reference: https://wiki.openssl.org/index.php/Binaries
+You will need to input "weedrecognition.com" for when you are prompted to give value for
+"Common Name (e.g. server FQDN or YOUR name) []:".
 ```pwsh
 openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -keyout privateKey.key -out certificate.crt
 cp privateKey.key .\charts\sso-server\files

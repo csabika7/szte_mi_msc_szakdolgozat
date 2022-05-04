@@ -7,9 +7,10 @@
             <small *ngIf="showNameError" id="model-name-help" style="display: none;" class="p-error block">Name of the weed is required.</small>
         </span>
         <p-fileUpload #fp id="model_file" name="model_file" required url="/v1/model-store/model" mode="basic" [auto]="false" chooseLabel="Choose model file"
-            (onBeforeUpload)="onBeforeUpload($event)" (onProgress)="onProgress($event)" >
+            (onBeforeUpload)="onBeforeUpload($event)" (onProgress)="onProgress($event)">
         </p-fileUpload>
-        <small *ngIf="showFileError" id="model-name-help" style="display: none;" class="p-error block">Model file is required.</small>
+        <small *ngIf="showFileError" id="model-file-help" style="display: none;" class="p-error block">Model file is required.</small>
+        <small *ngIf="showfileFormatError" id="model-file-format-help" style="display: none;" class="p-error block">Model file format must be hdf5.</small>
         <div style="text-align: right; margin-top: 1rem; margin-bottom: 1rem;">
             <button pButton type="button" label="Upload and create" (click)="upload($event)"></button>
         </div>

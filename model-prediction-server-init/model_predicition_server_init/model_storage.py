@@ -5,7 +5,7 @@ import shutil
 
 class ModelStorageClient:
 
-    def __init__(self, model_file_url, model_data_volume, model_file_name):
+    def __init__(self, model_file_url: str, model_data_volume: str, model_file_name: str):
         self.model_file_url = model_file_url
         self.model_data_volume = model_data_volume
         self.model_file_path = os.path.join(self.model_data_volume, model_file_name)

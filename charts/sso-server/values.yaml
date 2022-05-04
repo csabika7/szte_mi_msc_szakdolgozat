@@ -1,6 +1,6 @@
 sso:
-  serviceName: "sso-server-service"
-  hostname: "localhost:31152"
+  serviceName: sso-server-service
+  hostname: weedrecognition.com:31152
   username: admin
   password: admin
   realm: weed_rec_admin_realm

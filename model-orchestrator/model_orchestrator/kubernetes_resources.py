@@ -4,7 +4,7 @@ import yaml
 
 class KubernetesYamlTemplate:
 
-    def __init__(self, template_text):
+    def __init__(self, template_text: str):
         self.template_text = template_text
 
     def fill_template(self, **kwargs):
@@ -14,7 +14,7 @@ class KubernetesYamlTemplate:
 
 class ModelPredictionServerServiceYaml:
 
-    def __init__(self, model_id, model_name):
+    def __init__(self, model_id: str, model_name: str):
         self.model_id = model_id
         self.model_name = model_name
 
@@ -31,7 +31,7 @@ class ModelPredictionServerServiceYaml:
 
 class ModelPredictionServerDeploymentYaml:
 
-    def __init__(self, model_id, model_name, download_url):
+    def __init__(self, model_id: str, model_name: str, download_url: str):
         self.model_id = model_id
         self.model_name = model_name
         self.download_url = download_url

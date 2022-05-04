@@ -2,6 +2,7 @@ package hu.uszeged.weedrecognition.image.predict;
 
 import android.util.Log;
 
+import java.io.IOException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
@@ -14,17 +15,16 @@ import javax.net.ssl.X509TrustManager;
 
 import okhttp3.OkHttpClient;
 
-public final class ImagePredictionFactory {
+public final class ImagePredictionClientFactory {
 
-    private ImagePredictionFactory() {}
+    private ImagePredictionClientFactory() {}
 
-    public static ImagePredictionClient create() {
+    public static ImagePredictionClient create() throws IOException {
         try {
-            // TODO configurable address
-            return new ImagePredictionClient(createHttpClient(), "https", "weedrecognition.com", "31152");
+            return new ImagePredictionClient(createHttpClient(),"weedrecognition.com", 31152);
         } catch (NoSuchAlgorithmException | KeyManagementException ex) {
-            Log.e(ImagePredictionFactory.class.getName(), "Unable to create http client", ex);
-            return null;
+            Log.e(ImagePredictionClientFactory.class.getName(), "Unable to create https client", ex);
+            throw new IOException("Unable to create https client.", ex);
         }
     }
 

@@ -15,15 +15,16 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 public class ImagePredictionClient {
 
     private final OkHttpClient okHttpClient;
     private final String predictUrl;
 
-    public ImagePredictionClient(OkHttpClient okHttpClient, String proto, String host, String port) {
+    public ImagePredictionClient(OkHttpClient okHttpClient, String host, int port) {
         this.okHttpClient = okHttpClient;
-        this.predictUrl = String.format("%s://%s:%s/v1/model/predict", proto, host, port);
+        this.predictUrl = String.format("https://%s:%s/v1/model/predict", host, port);
 
     }
 
@@ -37,7 +38,11 @@ public class ImagePredictionClient {
                                 RequestBody.create(pngImg, MediaType.parse("image/png"))).build())
                 .build();
         try (Response response = okHttpClient.newCall(request).execute()) {
-            String responseBody = response.body().string();
+            ResponseBody body = response.body();
+            if(body == null) {
+                throw new IOException("Did not retrieve response body.");
+            }
+            String responseBody = body.string();
             Log.i(MainActivity.class.getName(), responseBody);
             JSONObject json = new JSONObject(responseBody);
             return json.getString("name");

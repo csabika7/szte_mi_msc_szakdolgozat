@@ -30,3 +30,12 @@ curl $KEYCLOAK_PROTO://$KEYCLOAK_HOST/admin/realms/$KEYCLOAK_REALM/clients \
      --header "Content-Type: application/json" \
      --header "Authorization: Bearer  $access_token" \
      --data $ingress_client_config
+
+
+# Create admin user for realm
+ingress_client_config=$(cat /realm_data/admin_user.json | tr -d "\n" | tr -d " ")
+curl $KEYCLOAK_PROTO://$KEYCLOAK_HOST/admin/realms/$KEYCLOAK_REALM/users \
+     --insecure --request POST \
+     --header "Content-Type: application/json" \
+     --header "Authorization: Bearer  $access_token" \
+     --data $ingress_client_config
