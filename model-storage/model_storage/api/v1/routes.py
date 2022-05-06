@@ -20,6 +20,11 @@ def store():
         return Response(response="Model file name is empty.", status=400, mimetype="text/plain")
     if name is None or name == "":
         return Response(response="Required field: 'name'.", status=400, mimetype="text/plain")
+
+    model = ModelEntity.query.filter_by(name=name).first()
+    if model:
+        return Response("Model already exists with name: {}".format(name), status=409, mimetype="text/plain")
+
     try:
         file_handler = ModelFileHandler(file, current_app.config["MODEL_STORAGE_PATH"])
         file_name = file_handler.save()
@@ -31,8 +36,10 @@ def store():
         return Model(model_id, name).to_dict(), 200
     except InvalidFileExtension:
         return Response(response="Invalid file format. Accepted format: hdf5.", status=400, mimetype="text/plain")
-    except IOError as ex:
+    except IOError:
         return Response(response="Unable to save file.", status=500, mimetype="text/plain")
+    except Exception:
+        return Response(response="Processing error. Please try again later.", status=500, mimetype="text/plain")
 
 
 @api_v1.route("/model/<string:model_id>", methods=["DELETE"])

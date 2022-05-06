@@ -45,8 +45,13 @@ def activate(model_id):
     if status != 200:
         return Response(response="", status=500, mimetype="text/plain")
 
-    current_app.logger.info("Creating model prediction server for {}.", model_id)
+    current_app.logger.info("Checking if already deactivated.")
     server_handler = ModelPredictionServerHandler(get_kube_config(), get_namespace())
+    active_model_ids = server_handler.list_model_prediction_server()
+    if model_id in active_model_ids:
+        return Response(response="Model has already been activated.", status=409, mimetype="text/plain")
+
+    current_app.logger.info("Creating model prediction server for {}.", model_id)
     server_handler.create_model_prediction_server(model.id, model.name, client.get_download_url(model.id))
 
     redis_channel = current_app.config.get("REDIS_CHANNEL")
@@ -67,8 +72,13 @@ def deactivate(model_id):
     if status != 200:
         return Response(response="", status=500, mimetype="text/plain")
 
-    current_app.logger.info("Deleting model prediction server for {}.", model_id)
+    current_app.logger.info("Checking if already deactivated.")
     server_handler = ModelPredictionServerHandler(get_kube_config(), get_namespace())
+    active_model_ids = server_handler.list_model_prediction_server()
+    if not (model_id in active_model_ids):
+        return Response(response="Model has already been deactivated.", status=409, mimetype="text/plain")
+
+    current_app.logger.info("Deleting model prediction server for {}.", model_id)
     server_handler.delete_model_prediction_server(model.id)
 
     redis_channel = current_app.config.get("REDIS_CHANNEL")
